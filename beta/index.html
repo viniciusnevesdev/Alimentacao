@@ -12,6 +12,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css?v=6">
   <link rel="stylesheet" href="../layout-fixes.css?v=6">
+  <link rel="stylesheet" href="./tab-animation.css?v=9">
   <style>.beta-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:#0f172a;background:#f8fafc}.beta-boot p{color:#64748b}</style>
 </head>
 <body>
@@ -35,6 +36,11 @@
       nutrition.onload=()=>{
         const app=document.createElement('script');
         app.src='./app.js?v=6';
+        app.onload=()=>{
+          const animation=document.createElement('script');
+          animation.src='./tab-animation.js?v=9';
+          document.body.appendChild(animation);
+        };
         document.body.appendChild(app);
       };
       nutrition.onerror=()=>{throw new Error('Falha ao carregar base nutricional')};
