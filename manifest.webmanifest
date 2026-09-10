@@ -1,11 +1,11 @@
 {
-  "name": "Alimentação",
-  "short_name": "Alimentação",
-  "description": "Registro pessoal de alimentação, calorias, macronutrientes, hidratação e qualidade nutricional.",
+  "name": "NutriTrack",
+  "short_name": "NutriTrack",
+  "description": "Registro pessoal de alimentação, calorias, qualidade nutricional, hidratação e progresso.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#059669",
+  "background_color": "#f6f8fb",
+  "theme_color": "#10a66f",
   "icons": []
 }
