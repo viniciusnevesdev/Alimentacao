@@ -10,30 +10,37 @@
   <meta name="apple-mobile-web-app-title" content="NutriTrack Beta">
   <title>NutriTrack Beta</title>
   <link rel="manifest" href="./manifest.webmanifest">
-  <style>
-    html,body{margin:0;min-height:100%;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:#0f172a}
-    .boot{min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center}.boot-card{max-width:360px}.mark{width:62px;height:62px;margin:0 auto 16px;border-radius:18px;background:linear-gradient(135deg,#10a66f,#14b8a6);display:grid;place-items:center;color:white;box-shadow:0 10px 28px rgba(16,166,111,.22)}.mark svg{width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.boot h1{font-size:21px;margin:0}.boot p{color:#64748b;font-size:13px;line-height:1.45}.error{color:#be123c}
-  </style>
+  <link rel="stylesheet" href="./styles.css">
+  <style>.beta-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:#0f172a;background:#f8fafc}.beta-boot p{color:#64748b}</style>
 </head>
 <body>
-  <div class="boot" id="boot"><div class="boot-card"><div class="mark"><svg viewBox="0 0 24 24"><path d="M7 2v8M4 2v5a3 3 0 0 0 6 0V2M7 10v12M16 2v20M16 2c3 2 4 5 4 8h-4"/></svg></div><h1>NutriTrack Beta</h1><p>Carregando ambiente de testes isolado…</p></div></div>
+  <div class="beta-boot" id="betaBoot"><div><h1>NutriTrack Beta</h1><p>Carregando ambiente de testes…</p></div></div>
   <script>
   (async()=>{
     try{
-      const response=await fetch('./base-index.html',{cache:'no-store'});
-      if(!response.ok) throw new Error('Falha ao carregar a base beta');
-      let html=await response.text();
-      html=html
-        .replace('<title>NutriTrack</title>','<title>NutriTrack Beta</title>')
-        .replace('content="NutriTrack"','content="NutriTrack Beta"')
-        .replace('href="manifest.webmanifest"','href="./manifest.webmanifest"')
-        .replace('href="styles.css"','href="./styles.css"')
-        .replace('src="nutrition-data.js"','src="./nutrition-data.js"')
-        .replace('src="app.js"','src="./beta-app.js"')
+      const response=await fetch('./base-index.html?v=5',{cache:'no-store'});
+      if(!response.ok) throw new Error('Falha ao carregar a interface');
+      const source=await response.text();
+      let body=source.match(/<body>([\s\S]*?)<\/body>/i)?.[1];
+      if(!body) throw new Error('Estrutura da interface não encontrada');
+      body=body
+        .replace(/<script\s+src="nutrition-data\.js"><\/script>/i,'')
+        .replace(/<script\s+src="app\.js"><\/script>/i,'')
         .replace('<span class="badge">PRO</span>','<span class="badge">PRO · BETA</span>');
-      document.open();document.write(html);document.close();
+      document.body.innerHTML=body;
+
+      const nutrition=document.createElement('script');
+      nutrition.src='./nutrition-data.js?v=5';
+      nutrition.onload=()=>{
+        const app=document.createElement('script');
+        app.src='./app.js?v=5';
+        document.body.appendChild(app);
+      };
+      nutrition.onerror=()=>{throw new Error('Falha ao carregar base nutricional')};
+      document.body.appendChild(nutrition);
     }catch(error){
-      document.getElementById('boot').innerHTML='<div class="boot-card"><h1>Não foi possível abrir a Beta</h1><p class="error">A base local da versão Beta não pôde ser carregada.</p><p><a href="../menu.html">Voltar ao Menu Geral</a></p></div>';
+      console.error('[NutriTrack Beta]',error);
+      document.body.innerHTML='<div class="beta-boot"><div><h1>Não foi possível abrir a Beta</h1><p>Atualize a página e tente novamente.</p><p><a href="../menu.html">Voltar ao Menu Geral</a></p></div></div>';
     }
   })();
   </script>
