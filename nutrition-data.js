@@ -44,128 +44,46 @@
     { id:'amendoim', name:'Amendoim torrado sem sal', aliases:['amendoim'], kcal:606, protein:25.6, carbs:18.7, fat:49.7, quality:4, standard:'1 punhado pequeno (30 g)', units:{punhado:30,colher:15} }
   ];
 
-  const normalize = (value='') => String(value)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .toLowerCase().trim().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ');
+  const stripAccents = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const normalize = (value='') => stripAccents(value).toLowerCase().trim().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ');
+  const normalizeAmount = (value='') => stripAccents(value).toLowerCase().trim().replace(/[^a-z0-9\s.,/()-]/g,' ').replace(/\s+/g,' ');
 
   const unitAliases = {
-    g:'g', grama:'g', gramas:'g', kg:'kg', quilo:'kg', quilos:'kg',
-    ml:'ml', litro:'l', litros:'l', l:'l',
-    unidade:'unidade', unidades:'unidade', un:'unidade',
-    fatia:'fatia', fatias:'fatia', colher:'colher', colheres:'colher',
-    'colher de sopa':'colher', 'colheres de sopa':'colher',
-    'colher de cha':'cha', 'colheres de cha':'cha', cha:'cha',
-    xicara:'xicara', xicaras:'xicara', copo:'copo', copos:'copo',
-    concha:'concha', conchas:'concha', file:'file', files:'file',
-    bife:'bife', bifes:'bife', lata:'lata', latas:'lata', pote:'pote', potes:'pote',
-    scoop:'scoop', scoops:'scoop', medidor:'medidor', medidores:'medidor',
-    disco:'disco', discos:'disco', folha:'folha', folhas:'folha', prato:'prato', pratos:'prato',
-    quadradinho:'quadradinho', quadradinhos:'quadradinho', biscoito:'biscoito', biscoitos:'biscoito',
-    punhado:'punhado', punhados:'punhado', metade:'metade', metades:'metade', ovo:'ovo', ovos:'ovo',
-    banana:'banana', bananas:'banana', maca:'maca', macas:'maca', laranja:'laranja', laranjas:'laranja',
-    tomate:'tomate', tomates:'tomate', batata:'batata', batatas:'batata', pao:'pao', paes:'pao'
+    g:'g', grama:'g', gramas:'g', kg:'kg', quilo:'kg', quilos:'kg', ml:'ml', litro:'l', litros:'l', l:'l',
+    unidade:'unidade', unidades:'unidade', un:'unidade', fatia:'fatia', fatias:'fatia', colher:'colher', colheres:'colher',
+    'colher de sopa':'colher', 'colheres de sopa':'colher', 'colher de cha':'cha', 'colheres de cha':'cha', cha:'cha',
+    xicara:'xicara', xicaras:'xicara', copo:'copo', copos:'copo', concha:'concha', conchas:'concha', file:'file', files:'file',
+    bife:'bife', bifes:'bife', lata:'lata', latas:'lata', pote:'pote', potes:'pote', scoop:'scoop', scoops:'scoop', medidor:'medidor', medidores:'medidor',
+    disco:'disco', discos:'disco', folha:'folha', folhas:'folha', prato:'prato', pratos:'prato', quadradinho:'quadradinho', quadradinhos:'quadradinho',
+    biscoito:'biscoito', biscoitos:'biscoito', punhado:'punhado', punhados:'punhado', metade:'metade', metades:'metade', ovo:'ovo', ovos:'ovo',
+    banana:'banana', bananas:'banana', maca:'maca', macas:'maca', laranja:'laranja', laranjas:'laranja', tomate:'tomate', tomates:'tomate', batata:'batata', batatas:'batata', pao:'pao', paes:'pao'
   };
 
   function scoreFood(food, query) {
-    const q = normalize(query);
-    if (!q) return 0;
-    const candidates = [food.name, ...(food.aliases || [])].map(normalize);
-    let best = 0;
-    for (const c of candidates) {
-      if (c === q) best = Math.max(best, 100);
-      else if (c.startsWith(q)) best = Math.max(best, 82 - Math.max(0, c.length-q.length));
-      else if (q.startsWith(c)) best = Math.max(best, 78 - Math.max(0, q.length-c.length));
-      else if (c.includes(q)) best = Math.max(best, 65);
-      else {
-        const words = q.split(' ').filter(Boolean);
-        const hits = words.filter(w => c.includes(w)).length;
-        if (hits) best = Math.max(best, 35 + hits / words.length * 25);
-      }
-    }
+    const q=normalize(query); if(!q)return 0; const candidates=[food.name,...(food.aliases||[])].map(normalize); let best=0;
+    for(const c of candidates){if(c===q)best=Math.max(best,100);else if(c.startsWith(q))best=Math.max(best,82-Math.max(0,c.length-q.length));else if(q.startsWith(c))best=Math.max(best,78-Math.max(0,q.length-c.length));else if(c.includes(q))best=Math.max(best,65);else{const words=q.split(' ').filter(Boolean);const hits=words.filter(w=>c.includes(w)).length;if(hits)best=Math.max(best,35+hits/words.length*25)}}
     return best;
   }
+  function search(query,limit=6){if(normalize(query).length<2)return[];return foods.map(food=>({food,score:scoreFood(food,query)})).filter(x=>x.score>=45).sort((a,b)=>b.score-a.score||a.food.name.localeCompare(b.food.name,'pt-BR')).slice(0,limit).map(x=>x.food)}
+  function findBest(query){const matches=search(query,1);if(!matches.length)return null;return scoreFood(matches[0],query)>=65?matches[0]:null}
+  function parseNumber(raw){if(!raw)return 1;const text=raw.replace(/\s/g,'').replace(',','.');if(/^\d+\/\d+$/.test(text)){const[a,b]=text.split('/').map(Number);return b?a/b:1}const n=Number(text);return Number.isFinite(n)?n:1}
+  function hasTerm(text,term){return new RegExp(`(^|\\s)${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}(?=\\s|$)`).test(text)}
 
-  function search(query, limit=6) {
-    if (normalize(query).length < 2) return [];
-    return foods.map(food => ({food, score:scoreFood(food, query)}))
-      .filter(x => x.score >= 45)
-      .sort((a,b) => b.score-a.score || a.food.name.localeCompare(b.food.name,'pt-BR'))
-      .slice(0, limit)
-      .map(x => x.food);
-  }
-
-  function findBest(query) {
-    const matches = search(query, 1);
-    if (!matches.length) return null;
-    const score = scoreFood(matches[0], query);
-    return score >= 65 ? matches[0] : null;
-  }
-
-  function parseNumber(raw) {
-    if (!raw) return 1;
-    const text = raw.replace(',','.');
-    if (/^\d+\/\d+$/.test(text)) {
-      const [a,b] = text.split('/').map(Number);
-      return b ? a/b : 1;
-    }
-    const n = Number(text);
-    return Number.isFinite(n) ? n : 1;
-  }
-
-  function parseAmount(amountText, food) {
-    const raw = normalize(amountText);
-    if (!raw) return null;
-    const numberMatch = raw.match(/(\d+(?:[.,]\d+)?|\d+\/\d+)/);
-    const qty = parseNumber(numberMatch?.[1]);
-    let unitText = raw.replace(numberMatch?.[0] || '', '').trim();
-    unitText = unitText.replace(/^de\s+/, '').trim();
-
-    if (/\bkg\b|\bquilo/.test(raw)) return { baseQty:qty*1000, label:`${qty} kg` };
-    if (/\bgrama|\bgramas|\bg\b/.test(raw)) return { baseQty:qty, label:`${qty} g` };
-    if (/\blitro|\blitros|\bl\b/.test(raw)) return { baseQty:qty*1000, label:`${qty} L` };
-    if (/\bml\b/.test(raw)) return { baseQty:qty, label:`${qty} ml` };
-
-    const normalizedKeys = Object.keys(unitAliases).sort((a,b)=>b.length-a.length);
-    const alias = normalizedKeys.find(k => unitText.includes(k) || raw.includes(k));
-    if (alias) {
-      const key = unitAliases[alias];
-      const perUnit = food.units?.[key];
-      if (perUnit) return { baseQty:qty*perUnit, label:`${qty} ${alias}` };
-    }
-
-    if (/^\d+(?:[.,]\d+)?$/.test(raw) && food.units?.unidade) {
-      return { baseQty:qty*food.units.unidade, label:`${qty} unidade${qty===1?'':'s'}` };
-    }
+  function parseAmount(amountText,food){
+    const raw=normalizeAmount(amountText);if(!raw)return null;
+    const parenthetical=raw.match(/\((\d+(?:[.,]\d+)?)\s*(g|ml)\)/);if(parenthetical){const qty=parseNumber(parenthetical[1]);return{baseQty:qty,label:`${qty} ${parenthetical[2]}`}}
+    const numberMatch=raw.match(/(\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?)/);const qty=parseNumber(numberMatch?.[1]);let unitText=raw.replace(numberMatch?.[0]||'',' ').replace(/[()]/g,' ').replace(/\s+/g,' ').trim().replace(/^de\s+/,'');
+    if(hasTerm(raw,'kg')||/\bquilo(s)?\b/.test(raw))return{baseQty:qty*1000,label:`${qty} kg`};
+    if(/\bgrama(s)?\b/.test(raw)||hasTerm(raw,'g'))return{baseQty:qty,label:`${qty} g`};
+    if(/\blitro(s)?\b/.test(raw)||hasTerm(raw,'l'))return{baseQty:qty*1000,label:`${qty} L`};
+    if(hasTerm(raw,'ml'))return{baseQty:qty,label:`${qty} ml`};
+    const normalizedKeys=Object.keys(unitAliases).sort((a,b)=>b.length-a.length);
+    for(const alias of normalizedKeys){if(hasTerm(unitText,alias)||hasTerm(raw,alias)){const key=unitAliases[alias];const perUnit=food.units?.[key];if(perUnit)return{baseQty:qty*perUnit,label:`${qty} ${alias}`}}}
+    if(/^\d+(?:[.,]\d+)?$/.test(raw)&&food.units?.unidade)return{baseQty:qty*food.units.unidade,label:`${qty} unidade${qty===1?'':'s'}`};
     return null;
   }
+  function standardBaseQty(food){const match=normalizeAmount(food.standard).match(/\((\d+(?:[.,]\d+)?)\s*(g|ml)\)/);if(match)return parseNumber(match[1]);if(food.units?.unidade)return food.units.unidade;return 100}
+  function estimate(foodOrId,amountText=''){const food=typeof foodOrId==='string'?foods.find(f=>f.id===foodOrId):foodOrId;if(!food)return null;const parsed=parseAmount(amountText,food);const baseQty=parsed?.baseQty??standardBaseQty(food);const factor=baseQty/100;const round1=v=>Math.round(v*10)/10;return{food,amountLabel:parsed?.label||food.standard,usedDefault:!parsed,baseQty,baseUnit:food.baseUnit||'g',calories:Math.round(food.kcal*factor),protein:round1(food.protein*factor),carbs:round1(food.carbs*factor),fat:round1(food.fat*factor),quality:food.quality}}
 
-  function standardBaseQty(food) {
-    const match = normalize(food.standard).match(/\((\d+(?:[.,]\d+)?)\s*(g|ml)\)/);
-    if (match) return Number(match[1].replace(',','.'));
-    if (food.units?.unidade) return food.units.unidade;
-    return 100;
-  }
-
-  function estimate(foodOrId, amountText='') {
-    const food = typeof foodOrId === 'string' ? foods.find(f => f.id===foodOrId) : foodOrId;
-    if (!food) return null;
-    const parsed = parseAmount(amountText, food);
-    const baseQty = parsed?.baseQty ?? standardBaseQty(food);
-    const factor = baseQty / 100;
-    const round1 = v => Math.round(v*10)/10;
-    return {
-      food,
-      amountLabel: parsed?.label || food.standard,
-      usedDefault: !parsed,
-      baseQty,
-      baseUnit: food.baseUnit || 'g',
-      calories: Math.round(food.kcal * factor),
-      protein: round1(food.protein * factor),
-      carbs: round1(food.carbs * factor),
-      fat: round1(food.fat * factor),
-      quality: food.quality
-    };
-  }
-
-  window.NutritionHelper = { foods, normalize, search, findBest, estimate };
+  window.NutritionHelper={foods,normalize,search,findBest,estimate};
 })();
