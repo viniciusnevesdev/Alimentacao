@@ -21,7 +21,7 @@
   if(badge) badge.textContent='PRO · BETA';
 
   const script=document.createElement('script');
-  script.src='./base-app.js?v=5';
+  script.src='./base-app.js?v=6';
   script.onload=()=>{document.documentElement.dataset.channel='beta';};
   script.onerror=()=>alert('Não foi possível iniciar a versão Beta.');
   document.body.appendChild(script);

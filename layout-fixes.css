@@ -1,0 +1,117 @@
+/* Navegação entre abas e contenção responsiva dos cartões. */
+.view[hidden],
+.view:not(.active) {
+  display: none !important;
+}
+
+.view.active.stack {
+  display: grid;
+}
+
+.shell,
+.view,
+.stack,
+.summary-layout,
+.macro-grid,
+.stats-grid,
+.catalog,
+.measure-summary,
+.backup-stats,
+.settings-grid,
+.form-grid,
+.preview-grid,
+.card,
+.dark-glow,
+.metric-card > div,
+.page-intro > div,
+.food-row > div,
+.backup-card-head > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.card,
+.dark-glow {
+  width: 100%;
+}
+
+.macro-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats-grid,
+.watch-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.catalog,
+.measure-summary,
+.backup-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.form-grid,
+.backup-file-actions,
+.measure-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.preview-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric-card span,
+.metric-card strong,
+.metric-card small,
+.card h2,
+.card h3,
+.card p,
+.dark-glow h2,
+.dark-glow p {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 820px) {
+  .macro-grid,
+  .catalog {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats-grid,
+  .watch-stats,
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .snapshot-row,
+  .backup-file-actions,
+  .settings-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .form-grid,
+  .preview-grid,
+  .measure-summary,
+  .backup-stats,
+  .measure-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 340px) {
+  .stats-grid,
+  .watch-stats,
+  .form-grid,
+  .preview-grid,
+  .measure-summary,
+  .backup-stats,
+  .measure-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

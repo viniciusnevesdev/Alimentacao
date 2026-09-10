@@ -9,7 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="NutriTrack" />
   <title>NutriTrack</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="layout-fixes.css?v=6" />
 </head>
 <body>
   <svg class="svg-sprite" aria-hidden="true">
@@ -65,19 +66,19 @@
         <button id="nextDay" type="button" aria-label="Próximo dia"><svg><use href="#i-right"/></svg></button>
       </div>
 
-      <nav class="tabs" aria-label="Seções do aplicativo">
-        <button class="tab active" data-view="diary" type="button"><svg><use href="#i-utensils"/></svg><span>Diário & Refeições</span></button>
-        <button class="tab" data-view="analytics" type="button"><svg><use href="#i-chart"/></svg><span>Gráficos & Progresso</span></button>
-        <button class="tab" data-view="watch" type="button"><svg><use href="#i-watch"/></svg><span>Apple Watch</span></button>
-        <button class="tab" data-view="measurements" type="button"><svg><use href="#i-scale"/></svg><span>Peso & Medidas</span></button>
-        <button class="tab" data-view="foods" type="button"><svg><use href="#i-book"/></svg><span>Banco de Alimentos</span></button>
-        <button class="tab" data-view="backup" type="button"><svg><use href="#i-cloud"/></svg><span>Backup</span></button>
+      <nav class="tabs" aria-label="Seções do aplicativo" role="tablist">
+        <button class="tab active" id="tab-diary" data-view="diary" type="button" role="tab" aria-controls="view-diary" aria-selected="true"><svg><use href="#i-utensils"/></svg><span>Diário & Refeições</span></button>
+        <button class="tab" id="tab-analytics" data-view="analytics" type="button" role="tab" aria-controls="view-analytics" aria-selected="false"><svg><use href="#i-chart"/></svg><span>Gráficos & Progresso</span></button>
+        <button class="tab" id="tab-watch" data-view="watch" type="button" role="tab" aria-controls="view-watch" aria-selected="false"><svg><use href="#i-watch"/></svg><span>Apple Watch</span></button>
+        <button class="tab" id="tab-measurements" data-view="measurements" type="button" role="tab" aria-controls="view-measurements" aria-selected="false"><svg><use href="#i-scale"/></svg><span>Peso & Medidas</span></button>
+        <button class="tab" id="tab-foods" data-view="foods" type="button" role="tab" aria-controls="view-foods" aria-selected="false"><svg><use href="#i-book"/></svg><span>Banco de Alimentos</span></button>
+        <button class="tab" id="tab-backup" data-view="backup" type="button" role="tab" aria-controls="view-backup" aria-selected="false"><svg><use href="#i-cloud"/></svg><span>Backup</span></button>
       </nav>
     </div>
   </header>
 
   <main class="shell">
-    <section class="view active stack" id="view-diary">
+    <section class="view active stack" id="view-diary" role="tabpanel" aria-labelledby="tab-diary">
       <div class="summary-layout">
         <article class="calorie-hero dark-glow">
           <div class="hero-top">
@@ -108,32 +109,32 @@
       <div class="meal-list" id="mealList"></div>
     </section>
 
-    <section class="view stack" id="view-analytics">
+    <section class="view stack" id="view-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden>
       <article class="card page-intro"><div class="intro-icon"><svg><use href="#i-chart"/></svg></div><div><h2>Gráficos de Progresso & Métricas</h2><p>Analise consumo calórico, macronutrientes, peso e medidas</p></div><div class="period-pills"><button data-period="7">7 Dias</button><button data-period="14">14 Dias</button><button data-period="30" class="active">30 Dias</button><button data-period="90">3 Meses</button><button data-period="180">6 Meses</button></div></article>
       <div class="stats-grid analytics-stats"><article class="card metric-card"><svg class="metric-icon amber"><use href="#i-flame"/></svg><div><span>Média Calórica / dia</span><strong id="avgCalories">0 <small>kcal</small></strong><small id="avgCaloriesGoal">Meta: 2.000 kcal</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-chart"/></svg><div><span>Média de Proteína</span><strong id="avgProtein">0 <small>g/dia</small></strong><small id="avgProteinGoal">Meta: 120g</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-watch"/></svg><div><span>Gasto Watch Médio</span><strong id="avgWatch">0 <small>kcal/dia</small></strong><small>Dados manuais do período</small></div></article><article class="card metric-card"><svg class="metric-icon emerald"><use href="#i-scale"/></svg><div><span>Variação de Peso</span><strong id="weightDelta">—</strong><small>No período selecionado</small></div></article></div>
       <div class="chart-switch"><button class="active"><svg><use href="#i-flame"/></svg>1. Consumo Calórico vs Apple Watch</button><button><svg><use href="#i-database"/></svg>2. Evolução de Macronutrientes</button></div>
       <article class="card chart-card"><h3>Ingestão Calórica vs Meta Diária & Queima Ativa do Apple Watch</h3><p>Acompanhe o balanço calórico diário ao longo do período selecionado</p><div class="legend"><span class="green"><i></i>Ingestão (kcal)</span><span class="red"><i></i>Apple Watch Ativo</span><span class="gray"><i></i>Meta</span></div><div class="chart-wrap"><svg id="calorieChart" viewBox="0 0 720 360" preserveAspectRatio="none" aria-label="Gráfico de calorias"></svg></div></article>
     </section>
 
-    <section class="view stack" id="view-watch">
+    <section class="view stack" id="view-watch" role="tabpanel" aria-labelledby="tab-watch" hidden>
       <article class="watch-hero dark-glow"><div class="watch-heading"><div class="watch-badge"><svg><use href="#i-watch"/></svg></div><div><h2>Apple Watch</h2><p>Dados manuais para acompanhar atividade</p></div><span class="connection-chip" id="watchStatus">Não conectado</span></div><button class="watch-edit" id="editWatch" type="button">Editar dados do dia</button><div class="watch-divider"></div><div class="watch-summary"><div><span>Calorias Ativas Queimadas</span><strong class="rose-text"><span id="watchActive">0</span> <small>kcal</small></strong><small>Podem ser usadas no balanço diário</small></div><div><span>Gasto Basal Estimado (TMB)</span><strong><span id="watchBasal">0</span> <small>kcal</small></strong><small>Preenchimento manual</small></div><div><span>Gasto Total do Dia</span><strong class="emerald-text"><span id="watchTotal">0</span> <small>kcal</small></strong><small>Basal + atividade</small></div></div></article>
       <article class="card activity-rings"><h3>Anéis de Atividade Apple Watch</h3><div class="activity-row rose-row"><div><span><svg><use href="#i-flame"/></svg>Movimento (Move)</span><strong><span id="moveValue">0</span> / <span id="moveGoal">600</span> kcal</strong></div><b id="movePercent">0%</b><div class="ring-progress"><span id="moveProgress"></span></div></div><div class="activity-row emerald-row"><div><span><svg><use href="#i-timer"/></svg>Exercício</span><strong><span id="exerciseValue">0</span> / <span id="exerciseGoal">30</span> min</strong></div><b id="exercisePercent">0%</b><div class="ring-progress"><span id="exerciseProgress"></span></div></div><div class="activity-row sky-row"><div><span><svg><use href="#i-steps"/></svg>Em pé (Stand)</span><strong><span id="standValue">0</span> / <span id="standGoal">12</span> h</strong></div><b id="standPercent">0%</b><div class="ring-progress"><span id="standProgress"></span></div></div></article>
       <div class="stats-grid watch-stats"><article class="card metric-card"><svg class="metric-icon indigo"><use href="#i-steps"/></svg><div><span>Passos Diários</span><strong id="stepsValue">0</strong><small id="distanceValue">0 km percorridos</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-heart"/></svg><div><span>Frequência Cardíaca</span><strong><span id="heartValue">0</span> <small>bpm</small></strong><small id="heartCurrent">Repouso • Atual: 0 bpm</small></div></article><article class="card metric-card"><svg class="metric-icon indigo"><use href="#i-moon"/></svg><div><span>Sono Rastreado</span><strong><span id="sleepValue">0</span> <small>horas</small></strong><small>Sono informado manualmente</small></div></article><article class="card metric-card"><svg class="metric-icon emerald"><use href="#i-watch"/></svg><div><span>Integração</span><strong>Manual</strong><small>Sem sincronização fictícia</small></div></article></div>
       <article class="card empty-feature"><h3>Treinos Registrados</h3><p>Esta versão ainda não lê o Apple Health automaticamente. Os dados acima são opcionais e ficam apenas neste aparelho.</p></article>
     </section>
 
-    <section class="view stack" id="view-measurements">
+    <section class="view stack" id="view-measurements" role="tabpanel" aria-labelledby="tab-measurements" hidden>
       <article class="measure-hero dark-glow"><div class="measure-title"><svg><use href="#i-scale"/></svg><div><h2>Controle de Peso & Medidas Corporais</h2><p>Acompanhe sua composição corporal, circunferência e evolução estética</p></div></div><div class="measure-actions"><button data-view-jump="analytics" type="button">Ver Gráficos Temporais</button><button id="newMeasurement" class="primary" type="button"><svg><use href="#i-plus"/></svg>Novo Registro</button></div><div class="watch-divider"></div><div class="measure-summary"><div><span>Peso Inicial</span><strong id="initialWeight">—</strong></div><div><span>Peso Mais Recente</span><strong class="emerald-text" id="latestWeight">—</strong></div><div><span>Meta de Peso</span><strong id="weightGoalText">—</strong></div><div><span>Variação Total</span><strong class="emerald-text" id="totalWeightDelta">—</strong></div></div></article>
       <article class="card measurements-table-card"><div class="table-head"><h3>Histórico Completo de Medições</h3><span id="measurementCount">0 pesagens registradas</span></div><div class="table-scroll"><table><thead><tr><th>Data</th><th>Peso</th><th>Gordura</th><th>Cintura</th><th></th></tr></thead><tbody id="measurementRows"></tbody></table></div></article>
     </section>
 
-    <section class="view stack" id="view-foods">
+    <section class="view stack" id="view-foods" role="tabpanel" aria-labelledby="tab-foods" hidden>
       <article class="card page-intro food-intro"><div class="intro-icon"><svg><use href="#i-book"/></svg></div><div><h2>Banco de Alimentos & Personalização</h2><p>Gerencie itens do cardápio e use dados nutricionais de referência</p></div><div class="intro-actions"><button class="btn" id="scanPlaceholder" type="button"><svg><use href="#i-search"/></svg>Buscar</button><button class="btn primary" id="createFoodPlaceholder" type="button"><svg><use href="#i-plus"/></svg>Criar Alimento</button></div></article>
       <article class="card catalog-toolbar"><div class="search-wrap"><svg><use href="#i-search"/></svg><input id="catalogSearch" type="search" placeholder="Buscar por nome, marca ou alimento..." autocomplete="off"/></div><div class="filter-pills"><button class="active" type="button">Todos os Alimentos</button><button type="button">Meus Personalizados</button></div></article>
       <div class="catalog" id="foodCatalog"></div>
     </section>
 
-    <section class="view stack" id="view-backup">
+    <section class="view stack" id="view-backup" role="tabpanel" aria-labelledby="tab-backup" hidden>
       <article class="backup-hero dark-glow"><div class="backup-heading"><div class="backup-badge"><svg><use href="#i-cloud"/></svg></div><div><h2>Backup Local</h2><p>Proteja os dados deste aparelho sem fingir sincronização em nuvem</p></div><span class="connection-chip ok">Ativo & Seguro</span></div><div class="backup-switch"><span>Armazenamento local</span><span class="fake-toggle on"><i></i></span></div><div class="watch-divider"></div><div class="backup-stats"><div><span>Dias Monitorados</span><strong id="daysMonitored">0 registros</strong></div><div><span>Alimentos Personalizados</span><strong>0 itens</strong></div><div><span>Histórico de Medidas</span><strong id="backupMeasurementCount">0 pesagens</strong></div><div><span>Status do Armazenamento</span><strong class="emerald-text">Protegido</strong></div></div></article>
       <article class="card backup-card"><div class="backup-card-head"><div class="icon-box icon-sky"><svg><use href="#i-cloud"/></svg></div><div><h3>Criar Ponto de Restauração Agora</h3><p>Grava um snapshot instantâneo com todos os dados atuais</p></div></div><div class="snapshot-row"><input id="snapshotName" placeholder="Nome opcional (ex: Antes de viajar)"/><button id="saveSnapshot" class="btn sky-btn" type="button"><svg><use href="#i-cloud"/></svg>Salvar</button></div></article>
       <article class="card backup-card"><div class="backup-card-head"><div class="icon-box icon-emerald"><svg><use href="#i-database"/></svg></div><div><h3>Arquivo de Backup</h3><p>Exporte ou importe arquivos de backup completos (.json)</p></div></div><div class="backup-file-actions"><button class="btn" id="exportBtn" type="button"><svg><use href="#i-download"/></svg>Baixar Backup</button><button class="btn primary" id="importBtn" type="button"><svg><use href="#i-upload"/></svg>Importar Arquivo</button></div><input id="importFile" type="file" accept="application/json,.json" hidden/></article>
@@ -151,7 +152,7 @@
   <dialog class="dialog small-dialog" id="measurementDialog"><div class="modal"><div class="modal-head"><div><h2>Novo registro corporal</h2><p>Peso e medidas ficam salvos localmente</p></div><button class="close-btn" data-close="measurementDialog" type="button">✕</button></div><form id="measurementForm" class="modal-body"><input type="hidden" id="measurementId"/><div class="form-grid"><div class="field full"><label>Data</label><input id="measurementDate" type="date" required/></div><div class="field"><label>Peso (kg)</label><input id="measurementWeight" type="number" min="0" step="0.1" required/></div><div class="field"><label>Gordura (%)</label><input id="measurementFat" type="number" min="0" step="0.1"/></div><div class="field full"><label>Cintura (cm)</label><input id="measurementWaist" type="number" min="0" step="0.1"/></div></div><div class="modal-actions"><button class="btn" data-close="measurementDialog" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar medição</button></div></form></div></dialog>
 
   <div class="toast" id="toast"></div>
-  <script src="nutrition-data.js"></script>
-  <script src="app.js"></script>
+  <script src="nutrition-data.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
