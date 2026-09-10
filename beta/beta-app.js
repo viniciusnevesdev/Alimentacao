@@ -7,8 +7,8 @@
     "'alimentacao-medidas-v1'":"'alimentacao-beta-medidas-v1'",
     "'alimentacao-snapshots-v1'":"'alimentacao-beta-snapshots-v1'"
   };
-  fetch('../app.js',{cache:'no-store'})
-    .then(r=>{if(!r.ok)throw new Error('Falha ao carregar app.js');return r.text()})
+  fetch('./base-app.js',{cache:'no-store'})
+    .then(r=>{if(!r.ok)throw new Error('Falha ao carregar base-app.js');return r.text()})
     .then(code=>{
       for(const [from,to] of Object.entries(replacements)) code=code.split(from).join(to);
       code=code.replace("a.download=`nutritrack-backup-${today()}.json`","a.download=`nutritrack-beta-backup-${today()}.json`");
