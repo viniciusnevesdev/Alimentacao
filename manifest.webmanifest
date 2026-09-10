@@ -1,0 +1,11 @@
+{
+  "name": "Alimentação",
+  "short_name": "Alimentação",
+  "description": "Registro pessoal de alimentação, calorias e qualidade nutricional.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5fb",
+  "theme_color": "#6d4aff",
+  "icons": []
+}
