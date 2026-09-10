@@ -1,11 +1,11 @@
 {
   "name": "Alimentação",
   "short_name": "Alimentação",
-  "description": "Registro pessoal de alimentação, calorias e qualidade nutricional.",
+  "description": "Registro pessoal de alimentação, calorias, macronutrientes, hidratação e qualidade nutricional.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f6f5fb",
-  "theme_color": "#6d4aff",
+  "background_color": "#f8fafc",
+  "theme_color": "#059669",
   "icons": []
 }
