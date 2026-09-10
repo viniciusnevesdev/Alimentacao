@@ -3,47 +3,75 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#059669" />
+  <meta name="theme-color" content="#10a66f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Alimentação" />
-  <title>Alimentação</title>
+  <meta name="apple-mobile-web-app-title" content="NutriTrack" />
+  <title>NutriTrack</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M7 2v8M4 2v5a3 3 0 0 0 6 0V2M7 10v12M16 2v20M16 2c3 2 4 5 4 8h-4"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-watch" viewBox="0 0 24 24"><rect x="7" y="6" width="10" height="12" rx="4"/><path d="m9 6 1-4h4l1 4M9 18l1 4h4l1-4M12 9v3l2 1"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 6h14M5 6 2 12h6L5 6Zm14 0-3 6h6l-3-6ZM7 21h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a3 3 0 0 1 3-3h5v17H7a3 3 0 0 0-3 3V5Zm16 0a3 3 0 0 0-3-3h-5v17h5a3 3 0 0 1 3 3V5Z"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H6a4 4 0 0 1-.5-8A6 6 0 0 1 17 9a5 5 0 0 1 .5 10Z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-water" viewBox="0 0 24 24"><path d="M12 2s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12Z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7 0-5-4-8-6-11 0 4-2 6-4 8-1-2-1-4-1-5-3 3-4 6-4 9 0 3 3 6 8 6Z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-steps" viewBox="0 0 24 24"><path d="M7 3c2 1 2 4 1 6s-3 3-4 2-1-4 0-6 2-3 3-2Zm10 8c2 1 3 4 2 6s-3 4-5 3-2-4-1-6 2-4 4-3Z"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4ZM14 6l3 3"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M4 3h16"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 2 4 3 8 3s8-1 8-3V5M4 11v6c0 2 4 3 8 3s8-1 8-3v-6"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+    <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M4 9h12v7a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9Zm12 2h2a3 3 0 0 1 0 6h-2M7 4v2M11 3v3M15 4v2"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7c-2-2-5-2-7 0-3 3-1 11 3 14 2 1 3-1 4-1s2 2 4 1c4-3 6-11 3-14-2-2-5-2-7 0Zm0 0c0-3 2-5 5-5"/></symbol>
+    <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M20 13a7 7 0 0 1-9-9 9 9 0 1 0 9 9Z"/><circle cx="8" cy="14" r="1"/><circle cx="11" cy="18" r="1"/><circle cx="5" cy="10" r="1"/></symbol>
+  </svg>
+
   <header class="topbar">
     <div class="topbar-inner">
       <div class="topline">
         <div class="brand">
-          <div class="brand-icon">🍴</div>
+          <div class="brand-icon"><svg><use href="#i-utensils"/></svg></div>
           <div>
-            <div class="brand-title-row"><h1>Alimentação</h1><span class="badge">Pessoal</span></div>
-            <p>Registro alimentar & qualidade nutricional</p>
+            <div class="brand-title-row"><h1>NutriTrack</h1><span class="badge">PRO</span></div>
+            <p>Alimentação & Saúde Inteligente</p>
           </div>
         </div>
-
-        <div class="date-nav" aria-label="Navegação por data">
-          <button id="prevDay" type="button" aria-label="Dia anterior">‹</button>
-          <div class="date-center">
-            <span>▣</span>
-            <input id="selectedDate" type="date" aria-label="Data selecionada" />
-            <span class="today-chip" id="dateChip">Hoje</span>
-          </div>
-          <button id="nextDay" type="button" aria-label="Próximo dia">›</button>
-          <button id="goToday" type="button" aria-label="Ir para hoje" title="Hoje">●</button>
-        </div>
-
         <div class="top-actions">
-          <button class="status-btn" type="button"><span>●</span> Dados locais</button>
-          <button class="status-btn" type="button"><span>✓</span> Offline</button>
+          <button class="square-action" type="button" data-view-jump="watch" aria-label="Apple Watch"><svg><use href="#i-watch"/></svg></button>
+          <button class="square-action cloud" type="button" data-view-jump="backup" aria-label="Backup"><svg><use href="#i-cloud"/></svg></button>
         </div>
       </div>
 
+      <div class="date-nav" aria-label="Navegação por data">
+        <button id="prevDay" type="button" aria-label="Dia anterior"><svg><use href="#i-left"/></svg></button>
+        <div class="date-center"><svg class="calendar-icon"><use href="#i-calendar"/></svg><input id="selectedDate" type="date" aria-label="Data selecionada"/><span class="pretty-date" id="prettyDate">Hoje</span><button id="goToday" class="today-chip" type="button">Hoje</button></div>
+        <button id="nextDay" type="button" aria-label="Próximo dia"><svg><use href="#i-right"/></svg></button>
+      </div>
+
       <nav class="tabs" aria-label="Seções do aplicativo">
-        <button class="tab active" data-view="diary" type="button">🍴 Diário & Refeições</button>
-        <button class="tab" data-view="foods" type="button">▤ Banco de Alimentos</button>
-        <button class="tab" data-view="settings" type="button">⚙ Metas & Backup</button>
+        <button class="tab active" data-view="diary" type="button"><svg><use href="#i-utensils"/></svg><span>Diário & Refeições</span></button>
+        <button class="tab" data-view="analytics" type="button"><svg><use href="#i-chart"/></svg><span>Gráficos & Progresso</span></button>
+        <button class="tab" data-view="watch" type="button"><svg><use href="#i-watch"/></svg><span>Apple Watch</span></button>
+        <button class="tab" data-view="measurements" type="button"><svg><use href="#i-scale"/></svg><span>Peso & Medidas</span></button>
+        <button class="tab" data-view="foods" type="button"><svg><use href="#i-book"/></svg><span>Banco de Alimentos</span></button>
+        <button class="tab" data-view="backup" type="button"><svg><use href="#i-cloud"/></svg><span>Backup</span></button>
       </nav>
     </div>
   </header>
@@ -51,152 +79,76 @@
   <main class="shell">
     <section class="view active stack" id="view-diary">
       <div class="summary-layout">
-        <article class="calorie-hero">
+        <article class="calorie-hero dark-glow">
           <div class="hero-top">
             <div>
-              <div><span class="eyebrow">Consumo calórico diário</span><button id="heroGoals" class="hero-goal-btn" type="button">Ajustar metas</button></div>
+              <div class="hero-eyebrow-row"><span class="eyebrow">Consumo calórico diário</span><button id="heroGoals" class="hero-goal-btn" type="button">Ajustar metas</button></div>
               <div class="hero-number"><strong id="totalCalories">0</strong><span>/ <b id="calorieGoalText">2.000</b> kcal meta</span></div>
               <div class="hero-balance" id="calorieBalance">Restam 2.000 kcal para atingir sua meta</div>
             </div>
-            <div class="hero-quality">
-              <label>QUALIDADE DO DIA</label>
-              <strong id="qualityScore">—</strong>
-              <small id="qualityText">Sem registros</small>
-            </div>
+            <div class="hero-quality"><label>Qualidade do dia</label><strong id="qualityScore">—</strong><small id="qualityText">Sem registros</small></div>
           </div>
-          <div>
-            <div class="hero-progress-head"><span>Progresso calórico</span><strong id="caloriePercent">0%</strong></div>
-            <div class="progress" id="calorieProgressWrap"><span id="calorieProgress"></span></div>
-          </div>
+          <div><div class="hero-progress-head"><span>Progresso Calórico (<b id="caloriePercent">0%</b>)</span><span id="netCaloriesText">Balanço diário</span></div><div class="progress" id="calorieProgressWrap"><span id="calorieProgress"></span></div></div>
         </article>
 
         <article class="card hydration">
-          <div class="card-title">
-            <div class="title-left"><div class="icon-box icon-sky">💧</div><div><h3>Hidratação</h3><p>Meta: <span id="waterGoalText">2.000</span> ml</p></div></div>
-            <span class="percent-chip" id="waterPercent">0%</span>
-          </div>
-          <div>
-            <div class="hydration-value"><strong><span id="waterValue">0</span> <span>ml</span></strong><small id="waterRemaining">Faltam 2.000 ml</small></div>
-            <div class="light-progress"><span id="waterProgress"></span></div>
-          </div>
-          <div class="water-actions">
-            <button id="waterMinus" type="button">−250ml</button>
-            <button id="water250" type="button">＋250ml</button>
-            <button id="water500" type="button">＋500ml</button>
-          </div>
+          <div class="card-title"><div class="title-left"><div class="icon-box icon-sky"><svg><use href="#i-water"/></svg></div><div><h3>Hidratação</h3><p>Meta: <span id="waterGoalText">2.000</span> ml</p></div></div><span class="percent-chip" id="waterPercent">0%</span></div>
+          <div><div class="hydration-value"><strong><span id="waterValue">0</span> <small>ml</small></strong><small id="waterRemaining">Faltam 2.000 ml</small></div><div class="light-progress"><span id="waterProgress"></span></div></div>
+          <div class="water-actions"><button id="waterMinus" type="button">−250ml</button><button id="water250" type="button">＋250ml</button><button id="water500" type="button">＋500ml</button></div>
         </article>
       </div>
 
       <div class="macro-grid">
-        <article class="card macro protein">
-          <div class="macro-head"><div class="macro-label"><span class="dot rose"></span>Proteínas</div><span class="macro-chip" style="background:#fff1f2;color:#be123c" id="proteinPercent">0%</span></div>
-          <div class="macro-value"><strong><span id="proteinValue">0</span>g</strong><span>Meta: <b id="proteinGoal">120</b>g</span></div>
-          <div class="light-progress"><span id="proteinProgress"></span></div>
-          <div class="macro-sub"><span id="proteinKcal">0 kcal</span><span id="proteinRemaining">120g restantes</span></div>
-        </article>
-        <article class="card macro carbs">
-          <div class="macro-head"><div class="macro-label"><span class="dot amber"></span>Carboidratos</div><span class="macro-chip" style="background:#fffbeb;color:#b45309" id="carbsPercent">0%</span></div>
-          <div class="macro-value"><strong><span id="carbsValue">0</span>g</strong><span>Meta: <b id="carbsGoal">250</b>g</span></div>
-          <div class="light-progress"><span id="carbsProgress"></span></div>
-          <div class="macro-sub"><span id="carbsKcal">0 kcal</span><span id="carbsRemaining">250g restantes</span></div>
-        </article>
-        <article class="card macro fat">
-          <div class="macro-head"><div class="macro-label"><span class="dot indigo"></span>Gorduras</div><span class="macro-chip" style="background:#eef2ff;color:#4338ca" id="fatPercent">0%</span></div>
-          <div class="macro-value"><strong><span id="fatValue">0</span>g</strong><span>Meta: <b id="fatGoal">65</b>g</span></div>
-          <div class="light-progress"><span id="fatProgress"></span></div>
-          <div class="macro-sub"><span id="fatKcal">0 kcal</span><span id="fatRemaining">65g restantes</span></div>
-        </article>
+        <article class="card macro protein"><div class="macro-head"><div class="macro-label"><span class="dot rose"></span>Proteínas</div><span class="macro-chip rose" id="proteinPercent">0%</span></div><div class="macro-value"><strong><span id="proteinValue">0</span>g</strong><span>Meta: <b id="proteinGoal">120</b>g</span></div><div class="light-progress"><span id="proteinProgress"></span></div><div class="macro-sub"><span id="proteinKcal">0 kcal</span><span id="proteinRemaining">120g restantes</span></div></article>
+        <article class="card macro carbs"><div class="macro-head"><div class="macro-label"><span class="dot amber"></span>Carboidratos</div><span class="macro-chip amber" id="carbsPercent">0%</span></div><div class="macro-value"><strong><span id="carbsValue">0</span>g</strong><span>Meta: <b id="carbsGoal">250</b>g</span></div><div class="light-progress"><span id="carbsProgress"></span></div><div class="macro-sub"><span id="carbsKcal">0 kcal</span><span id="carbsRemaining">250g restantes</span></div></article>
+        <article class="card macro fat"><div class="macro-head"><div class="macro-label"><span class="dot indigo"></span>Gorduras</div><span class="macro-chip indigo" id="fatPercent">0%</span></div><div class="macro-value"><strong><span id="fatValue">0</span>g</strong><span>Meta: <b id="fatGoal">65</b>g</span></div><div class="light-progress"><span id="fatProgress"></span></div><div class="macro-sub"><span id="fatKcal">0 kcal</span><span id="fatRemaining">65g restantes</span></div></article>
       </div>
 
-      <div class="section-head"><div><h2>Refeições Diárias</h2><p>Registre os alimentos e ajuste as porções quando precisar</p></div></div>
+      <div class="section-head"><div><h2>Refeições<br class="mobile-break"> Diárias</h2><p>Clique no alimento para ajustar porção ou adicione novos</p></div></div>
       <div class="meal-list" id="mealList"></div>
     </section>
 
-    <section class="view stack" id="view-foods">
-      <div class="section-head"><div><h2>Banco de Alimentos</h2><p>Base local usada para sugerir calorias e macronutrientes</p></div><span class="today-chip" id="catalogCount">0 alimentos</span></div>
-      <div class="catalog-tools"><input class="search" id="catalogSearch" type="search" placeholder="Buscar alimento..." autocomplete="off" /></div>
-      <div class="catalog" id="foodCatalog"></div>
-      <div class="card settings-card"><h3>Sobre os valores</h3><p>Os números são referências aproximadas. Marcas, receitas, tamanhos de porção e preparo podem mudar bastante o resultado. Quando houver rótulo, use os dados específicos do produto.</p></div>
+    <section class="view stack" id="view-analytics">
+      <article class="card page-intro"><div class="intro-icon"><svg><use href="#i-chart"/></svg></div><div><h2>Gráficos de Progresso & Métricas</h2><p>Analise consumo calórico, macronutrientes, peso e medidas</p></div><div class="period-pills"><button data-period="7">7 Dias</button><button data-period="14">14 Dias</button><button data-period="30" class="active">30 Dias</button><button data-period="90">3 Meses</button><button data-period="180">6 Meses</button></div></article>
+      <div class="stats-grid analytics-stats"><article class="card metric-card"><svg class="metric-icon amber"><use href="#i-flame"/></svg><div><span>Média Calórica / dia</span><strong id="avgCalories">0 <small>kcal</small></strong><small id="avgCaloriesGoal">Meta: 2.000 kcal</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-chart"/></svg><div><span>Média de Proteína</span><strong id="avgProtein">0 <small>g/dia</small></strong><small id="avgProteinGoal">Meta: 120g</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-watch"/></svg><div><span>Gasto Watch Médio</span><strong id="avgWatch">0 <small>kcal/dia</small></strong><small>Dados manuais do período</small></div></article><article class="card metric-card"><svg class="metric-icon emerald"><use href="#i-scale"/></svg><div><span>Variação de Peso</span><strong id="weightDelta">—</strong><small>No período selecionado</small></div></article></div>
+      <div class="chart-switch"><button class="active"><svg><use href="#i-flame"/></svg>1. Consumo Calórico vs Apple Watch</button><button><svg><use href="#i-database"/></svg>2. Evolução de Macronutrientes</button></div>
+      <article class="card chart-card"><h3>Ingestão Calórica vs Meta Diária & Queima Ativa do Apple Watch</h3><p>Acompanhe o balanço calórico diário ao longo do período selecionado</p><div class="legend"><span class="green"><i></i>Ingestão (kcal)</span><span class="red"><i></i>Apple Watch Ativo</span><span class="gray"><i></i>Meta</span></div><div class="chart-wrap"><svg id="calorieChart" viewBox="0 0 720 360" preserveAspectRatio="none" aria-label="Gráfico de calorias"></svg></div></article>
     </section>
 
-    <section class="view stack" id="view-settings">
-      <div class="section-head"><div><h2>Metas & Backup</h2><p>Personalize o painel e proteja seus registros</p></div></div>
-      <div class="settings-grid">
-        <article class="card settings-card">
-          <h3>Metas diárias</h3>
-          <p>Servem como referência visual para acompanhar o dia. Não são uma recomendação médica automática.</p>
-          <div class="form-grid">
-            <div class="field"><label>Calorias (kcal)</label><input id="setting-calorieGoal" type="number" min="0" step="50" inputmode="numeric" /></div>
-            <div class="field"><label>Proteína (g)</label><input id="setting-proteinGoal" type="number" min="0" step="5" inputmode="numeric" /></div>
-            <div class="field"><label>Carboidratos (g)</label><input id="setting-carbsGoal" type="number" min="0" step="5" inputmode="numeric" /></div>
-            <div class="field"><label>Gorduras (g)</label><input id="setting-fatGoal" type="number" min="0" step="5" inputmode="numeric" /></div>
-            <div class="field full"><label>Água (ml)</label><input id="setting-waterGoal" type="number" min="0" step="250" inputmode="numeric" /></div>
-          </div>
-          <button class="btn primary" id="saveGoals" type="button" style="margin-top:12px;width:100%">Salvar metas</button>
-        </article>
+    <section class="view stack" id="view-watch">
+      <article class="watch-hero dark-glow"><div class="watch-heading"><div class="watch-badge"><svg><use href="#i-watch"/></svg></div><div><h2>Apple Watch</h2><p>Dados manuais para acompanhar atividade</p></div><span class="connection-chip" id="watchStatus">Não conectado</span></div><button class="watch-edit" id="editWatch" type="button">Editar dados do dia</button><div class="watch-divider"></div><div class="watch-summary"><div><span>Calorias Ativas Queimadas</span><strong class="rose-text"><span id="watchActive">0</span> <small>kcal</small></strong><small>Podem ser usadas no balanço diário</small></div><div><span>Gasto Basal Estimado (TMB)</span><strong><span id="watchBasal">0</span> <small>kcal</small></strong><small>Preenchimento manual</small></div><div><span>Gasto Total do Dia</span><strong class="emerald-text"><span id="watchTotal">0</span> <small>kcal</small></strong><small>Basal + atividade</small></div></div></article>
+      <article class="card activity-rings"><h3>Anéis de Atividade Apple Watch</h3><div class="activity-row rose-row"><div><span><svg><use href="#i-flame"/></svg>Movimento (Move)</span><strong><span id="moveValue">0</span> / <span id="moveGoal">600</span> kcal</strong></div><b id="movePercent">0%</b><div class="ring-progress"><span id="moveProgress"></span></div></div><div class="activity-row emerald-row"><div><span><svg><use href="#i-timer"/></svg>Exercício</span><strong><span id="exerciseValue">0</span> / <span id="exerciseGoal">30</span> min</strong></div><b id="exercisePercent">0%</b><div class="ring-progress"><span id="exerciseProgress"></span></div></div><div class="activity-row sky-row"><div><span><svg><use href="#i-steps"/></svg>Em pé (Stand)</span><strong><span id="standValue">0</span> / <span id="standGoal">12</span> h</strong></div><b id="standPercent">0%</b><div class="ring-progress"><span id="standProgress"></span></div></div></article>
+      <div class="stats-grid watch-stats"><article class="card metric-card"><svg class="metric-icon indigo"><use href="#i-steps"/></svg><div><span>Passos Diários</span><strong id="stepsValue">0</strong><small id="distanceValue">0 km percorridos</small></div></article><article class="card metric-card"><svg class="metric-icon rose"><use href="#i-heart"/></svg><div><span>Frequência Cardíaca</span><strong><span id="heartValue">0</span> <small>bpm</small></strong><small id="heartCurrent">Repouso • Atual: 0 bpm</small></div></article><article class="card metric-card"><svg class="metric-icon indigo"><use href="#i-moon"/></svg><div><span>Sono Rastreado</span><strong><span id="sleepValue">0</span> <small>horas</small></strong><small>Sono informado manualmente</small></div></article><article class="card metric-card"><svg class="metric-icon emerald"><use href="#i-watch"/></svg><div><span>Integração</span><strong>Manual</strong><small>Sem sincronização fictícia</small></div></article></div>
+      <article class="card empty-feature"><h3>Treinos Registrados</h3><p>Esta versão ainda não lê o Apple Health automaticamente. Os dados acima são opcionais e ficam apenas neste aparelho.</p></article>
+    </section>
 
-        <article class="card settings-card">
-          <h3>Backup local</h3>
-          <p>Exporte registros, metas e hidratação para JSON. A restauração também aceita backups das versões anteriores.</p>
-          <div class="form-grid">
-            <button class="btn" id="exportBtn" type="button">Exportar JSON</button>
-            <button class="btn" id="importBtn" type="button">Importar JSON</button>
-          </div>
-          <input id="importFile" type="file" accept="application/json,.json" hidden />
-          <div style="height:1px;background:#f1f5f9;margin:16px 0"></div>
-          <h3>Apagar dados</h3>
-          <p>Remove os dados salvos neste navegador. Só é reversível se você tiver um backup.</p>
-          <button class="btn danger" id="clearBtn" type="button">Apagar todos os dados</button>
-        </article>
-      </div>
+    <section class="view stack" id="view-measurements">
+      <article class="measure-hero dark-glow"><div class="measure-title"><svg><use href="#i-scale"/></svg><div><h2>Controle de Peso & Medidas Corporais</h2><p>Acompanhe sua composição corporal, circunferência e evolução estética</p></div></div><div class="measure-actions"><button data-view-jump="analytics" type="button">Ver Gráficos Temporais</button><button id="newMeasurement" class="primary" type="button"><svg><use href="#i-plus"/></svg>Novo Registro</button></div><div class="watch-divider"></div><div class="measure-summary"><div><span>Peso Inicial</span><strong id="initialWeight">—</strong></div><div><span>Peso Mais Recente</span><strong class="emerald-text" id="latestWeight">—</strong></div><div><span>Meta de Peso</span><strong id="weightGoalText">—</strong></div><div><span>Variação Total</span><strong class="emerald-text" id="totalWeightDelta">—</strong></div></div></article>
+      <article class="card measurements-table-card"><div class="table-head"><h3>Histórico Completo de Medições</h3><span id="measurementCount">0 pesagens registradas</span></div><div class="table-scroll"><table><thead><tr><th>Data</th><th>Peso</th><th>Gordura</th><th>Cintura</th><th></th></tr></thead><tbody id="measurementRows"></tbody></table></div></article>
+    </section>
 
-      <article class="card settings-card"><h3>Privacidade e funcionamento</h3><p>Os registros ficam no armazenamento local do navegador. A interface não finge sincronização com iCloud, Apple Watch ou outros serviços quando não existe uma integração real configurada.</p></article>
+    <section class="view stack" id="view-foods">
+      <article class="card page-intro food-intro"><div class="intro-icon"><svg><use href="#i-book"/></svg></div><div><h2>Banco de Alimentos & Personalização</h2><p>Gerencie itens do cardápio e use dados nutricionais de referência</p></div><div class="intro-actions"><button class="btn" id="scanPlaceholder" type="button"><svg><use href="#i-search"/></svg>Buscar</button><button class="btn primary" id="createFoodPlaceholder" type="button"><svg><use href="#i-plus"/></svg>Criar Alimento</button></div></article>
+      <article class="card catalog-toolbar"><div class="search-wrap"><svg><use href="#i-search"/></svg><input id="catalogSearch" type="search" placeholder="Buscar por nome, marca ou alimento..." autocomplete="off"/></div><div class="filter-pills"><button class="active" type="button">Todos os Alimentos</button><button type="button">Meus Personalizados</button></div></article>
+      <div class="catalog" id="foodCatalog"></div>
+    </section>
+
+    <section class="view stack" id="view-backup">
+      <article class="backup-hero dark-glow"><div class="backup-heading"><div class="backup-badge"><svg><use href="#i-cloud"/></svg></div><div><h2>Backup Local</h2><p>Proteja os dados deste aparelho sem fingir sincronização em nuvem</p></div><span class="connection-chip ok">Ativo & Seguro</span></div><div class="backup-switch"><span>Armazenamento local</span><span class="fake-toggle on"><i></i></span></div><div class="watch-divider"></div><div class="backup-stats"><div><span>Dias Monitorados</span><strong id="daysMonitored">0 registros</strong></div><div><span>Alimentos Personalizados</span><strong>0 itens</strong></div><div><span>Histórico de Medidas</span><strong id="backupMeasurementCount">0 pesagens</strong></div><div><span>Status do Armazenamento</span><strong class="emerald-text">Protegido</strong></div></div></article>
+      <article class="card backup-card"><div class="backup-card-head"><div class="icon-box icon-sky"><svg><use href="#i-cloud"/></svg></div><div><h3>Criar Ponto de Restauração Agora</h3><p>Grava um snapshot instantâneo com todos os dados atuais</p></div></div><div class="snapshot-row"><input id="snapshotName" placeholder="Nome opcional (ex: Antes de viajar)"/><button id="saveSnapshot" class="btn sky-btn" type="button"><svg><use href="#i-cloud"/></svg>Salvar</button></div></article>
+      <article class="card backup-card"><div class="backup-card-head"><div class="icon-box icon-emerald"><svg><use href="#i-database"/></svg></div><div><h3>Arquivo de Backup</h3><p>Exporte ou importe arquivos de backup completos (.json)</p></div></div><div class="backup-file-actions"><button class="btn" id="exportBtn" type="button"><svg><use href="#i-download"/></svg>Baixar Backup</button><button class="btn primary" id="importBtn" type="button"><svg><use href="#i-upload"/></svg>Importar Arquivo</button></div><input id="importFile" type="file" accept="application/json,.json" hidden/></article>
+      <article class="card backup-card"><div class="table-head"><h3><svg class="inline-icon"><use href="#i-history"/></svg>Histórico de Versões Salvas</h3><span id="snapshotCount">0 snapshots disponíveis</span></div><div id="snapshotList" class="snapshot-list"></div></article>
+      <article class="card settings-card"><h3>Metas e dados</h3><div class="settings-grid"><div class="field"><label>Calorias (kcal)</label><input id="setting-calorieGoal" type="number" min="0" step="50"/></div><div class="field"><label>Proteína (g)</label><input id="setting-proteinGoal" type="number" min="0" step="5"/></div><div class="field"><label>Carboidratos (g)</label><input id="setting-carbsGoal" type="number" min="0" step="5"/></div><div class="field"><label>Gorduras (g)</label><input id="setting-fatGoal" type="number" min="0" step="5"/></div><div class="field"><label>Água (ml)</label><input id="setting-waterGoal" type="number" min="0" step="250"/></div><div class="field"><label>Meta de peso (kg)</label><input id="setting-weightGoal" type="number" min="0" step="0.1"/></div></div><button id="saveGoals" class="btn primary full-btn" type="button">Salvar metas</button><button id="clearBtn" class="btn danger full-btn" type="button">Apagar dados deste aparelho</button></article>
     </section>
   </main>
 
-  <dialog class="dialog" id="entryDialog">
-    <div class="modal">
-      <div class="modal-head"><div><h2 id="entryDialogTitle">Adicionar alimento</h2><p>Busque na base ou preencha manualmente</p></div><button class="close-btn" data-close="entryDialog" type="button">✕</button></div>
-      <div class="quick-strip">Sugestões nutricionais locais · rápidas, editáveis e disponíveis offline</div>
-      <form id="entryForm" class="modal-body">
-        <input type="hidden" id="entryId" />
-        <div class="form-grid">
-          <div class="field"><label>Data</label><input id="entryDate" type="date" required /></div>
-          <div class="field"><label>Horário</label><input id="entryTime" type="time" required /></div>
-          <div class="field full"><label>Refeição</label><select id="meal" required><option>Café da manhã</option><option>Lanche da manhã</option><option>Almoço</option><option>Lanche da tarde</option><option>Jantar</option><option>Ceia</option><option>Outro</option></select></div>
-          <div class="field full"><label>Alimento / preparação</label><input id="food" type="text" autocomplete="off" placeholder="Ex.: arroz, frango grelhado, banana" required /></div>
-        </div>
+  <footer>NutriTrack • Monitoramento nutricional pessoal • Dados salvos localmente</footer>
 
-        <div class="food-suggestions" id="foodSuggestions"></div>
+  <dialog class="dialog" id="entryDialog"><div class="modal"><div class="modal-head"><div><h2 id="entryDialogTitle">Adicionar alimento</h2><p>Busque na base ou preencha manualmente</p></div><button class="close-btn" data-close="entryDialog" type="button">✕</button></div><form id="entryForm" class="modal-body"><input type="hidden" id="entryId"/><div class="form-grid"><div class="field"><label>Data</label><input id="entryDate" type="date" required/></div><div class="field"><label>Horário</label><input id="entryTime" type="time" required/></div><div class="field full"><label>Refeição</label><select id="meal" required><option>Café da manhã</option><option>Lanche da manhã</option><option>Almoço</option><option>Lanche da tarde</option><option>Jantar</option><option>Ceia</option><option>Outro</option></select></div><div class="field full"><label>Alimento / preparação</label><input id="food" type="text" autocomplete="off" placeholder="Ex.: arroz, frango grelhado, banana" required/></div></div><div class="food-suggestions" id="foodSuggestions"></div><div class="field"><label>Quantidade</label><input id="amount" type="text" autocomplete="off" placeholder="Ex.: 120 g, 2 unidades, 1 fatia"/></div><div class="suggestion-preview" id="nutritionPreview" hidden><div class="preview-top"><div><b id="previewName"></b><div class="notice" id="previewServing"></div></div><span>ESTIMATIVA</span></div><div class="preview-grid"><div class="preview-stat"><b id="previewCalories">0</b><small>kcal</small></div><div class="preview-stat"><b><span id="previewProtein">0</span>g</b><small>proteína</small></div><div class="preview-stat"><b><span id="previewCarbs">0</span>g</b><small>carboidratos</small></div><div class="preview-stat"><b><span id="previewFat">0</span>g</b><small>gorduras</small></div></div><button class="btn primary full-btn" id="applySuggestion" type="button">Aplicar sugestão nutricional</button></div><div class="form-grid"><div class="field"><label>Calorias (kcal)</label><input id="calories" type="number" min="0" step="1" required/></div><div class="field"><label>Proteína (g)</label><input id="protein" type="number" min="0" step="0.1"/></div><div class="field"><label>Carboidratos (g)</label><input id="carbs" type="number" min="0" step="0.1"/></div><div class="field"><label>Gorduras (g)</label><input id="fat" type="number" min="0" step="0.1"/></div><div class="field full"><label>Qualidade nutricional</label><div class="quality-pills"><input type="radio" name="quality" id="q1" value="1"><label for="q1">1</label><input type="radio" name="quality" id="q2" value="2"><label for="q2">2</label><input type="radio" name="quality" id="q3" value="3" checked><label for="q3">3</label><input type="radio" name="quality" id="q4" value="4"><label for="q4">4</label><input type="radio" name="quality" id="q5" value="5"><label for="q5">5</label></div></div><div class="field full"><label>Observações</label><textarea id="notes" placeholder="Fome, saciedade, marca, preparo, contexto..."></textarea></div></div><div class="modal-actions"><button class="btn" data-close="entryDialog" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar registro</button></div></form></div></dialog>
 
-        <div class="form-grid">
-          <div class="field full"><label>Quantidade</label><input id="amount" type="text" autocomplete="off" placeholder="Ex.: 120 g, 2 unidades, 1 fatia" /></div>
-        </div>
+  <dialog class="dialog small-dialog" id="watchDialog"><div class="modal"><div class="modal-head"><div><h2>Dados do Apple Watch</h2><p>Preenchimento manual — sem fingir sincronização</p></div><button class="close-btn" data-close="watchDialog" type="button">✕</button></div><form id="watchForm" class="modal-body"><div class="form-grid"><div class="field"><label>Calorias ativas</label><input id="watch-active-input" type="number" min="0"/></div><div class="field"><label>Gasto basal</label><input id="watch-basal-input" type="number" min="0"/></div><div class="field"><label>Exercício (min)</label><input id="watch-exercise-input" type="number" min="0"/></div><div class="field"><label>Em pé (h)</label><input id="watch-stand-input" type="number" min="0"/></div><div class="field"><label>Passos</label><input id="watch-steps-input" type="number" min="0"/></div><div class="field"><label>Distância (km)</label><input id="watch-distance-input" type="number" min="0" step="0.01"/></div><div class="field"><label>FC repouso</label><input id="watch-resting-input" type="number" min="0"/></div><div class="field"><label>FC atual</label><input id="watch-current-input" type="number" min="0"/></div><div class="field full"><label>Sono (horas)</label><input id="watch-sleep-input" type="number" min="0" step="0.1"/></div></div><div class="modal-actions"><button class="btn" data-close="watchDialog" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar dados</button></div></form></div></dialog>
 
-        <div class="suggestion-preview" id="nutritionPreview" hidden>
-          <div class="preview-top"><div><b id="previewName"></b><div class="notice" id="previewServing"></div></div><span>ESTIMATIVA</span></div>
-          <div class="preview-grid">
-            <div class="preview-stat"><b><span id="previewCalories">0</span></b><small>kcal</small></div>
-            <div class="preview-stat"><b><span id="previewProtein">0</span>g</b><small>proteína</small></div>
-            <div class="preview-stat"><b><span id="previewCarbs">0</span>g</b><small>carboidratos</small></div>
-            <div class="preview-stat"><b><span id="previewFat">0</span>g</b><small>gorduras</small></div>
-          </div>
-          <button class="btn primary" id="applySuggestion" type="button" style="width:100%;margin-top:10px">Aplicar sugestão nutricional</button>
-        </div>
-
-        <div class="form-grid">
-          <div class="field"><label>Calorias (kcal)</label><input id="calories" type="number" min="0" step="1" inputmode="decimal" required /></div>
-          <div class="field"><label>Proteína (g)</label><input id="protein" type="number" min="0" step="0.1" inputmode="decimal" /></div>
-          <div class="field"><label>Carboidratos (g)</label><input id="carbs" type="number" min="0" step="0.1" inputmode="decimal" /></div>
-          <div class="field"><label>Gorduras (g)</label><input id="fat" type="number" min="0" step="0.1" inputmode="decimal" /></div>
-          <div class="field full"><label>Qualidade nutricional</label><div class="quality-pills"><input type="radio" name="quality" id="q1" value="1"><label for="q1">1</label><input type="radio" name="quality" id="q2" value="2"><label for="q2">2</label><input type="radio" name="quality" id="q3" value="3" checked><label for="q3">3</label><input type="radio" name="quality" id="q4" value="4"><label for="q4">4</label><input type="radio" name="quality" id="q5" value="5"><label for="q5">5</label></div><div class="notice">1 = baixa qualidade; 5 = alta. A sugestão pode ser alterada.</div></div>
-          <div class="field full"><label>Observações · opcional</label><textarea id="notes" placeholder="Fome, saciedade, marca, preparo, contexto..."></textarea></div>
-        </div>
-        <div class="notice">As estimativas são referências práticas, não medições exatas. Use o rótulo quando quiser maior precisão para um produto específico.</div>
-        <div class="modal-actions"><button class="btn" data-close="entryDialog" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar registro</button></div>
-      </form>
-    </div>
-  </dialog>
+  <dialog class="dialog small-dialog" id="measurementDialog"><div class="modal"><div class="modal-head"><div><h2>Novo registro corporal</h2><p>Peso e medidas ficam salvos localmente</p></div><button class="close-btn" data-close="measurementDialog" type="button">✕</button></div><form id="measurementForm" class="modal-body"><input type="hidden" id="measurementId"/><div class="form-grid"><div class="field full"><label>Data</label><input id="measurementDate" type="date" required/></div><div class="field"><label>Peso (kg)</label><input id="measurementWeight" type="number" min="0" step="0.1" required/></div><div class="field"><label>Gordura (%)</label><input id="measurementFat" type="number" min="0" step="0.1"/></div><div class="field full"><label>Cintura (cm)</label><input id="measurementWaist" type="number" min="0" step="0.1"/></div></div><div class="modal-actions"><button class="btn" data-close="measurementDialog" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar medição</button></div></form></div></dialog>
 
   <div class="toast" id="toast"></div>
   <script src="nutrition-data.js"></script>
