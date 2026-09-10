@@ -8,6 +8,22 @@
   display: grid;
 }
 
+a.square-action {
+  text-decoration: none;
+}
+
+.brand-icon.official-app-icon {
+  overflow: hidden;
+  background: #10a66f;
+}
+
+.brand-icon.official-app-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .shell,
 .view,
 .stack,

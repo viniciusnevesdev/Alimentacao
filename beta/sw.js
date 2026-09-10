@@ -1,4 +1,4 @@
-const CACHE='nutritrack-beta-v6';
+const CACHE='nutritrack-beta-v8';
 const ASSETS=['./','./index.html','../layout-fixes.css','./manifest.webmanifest','./app.js','./base-index.html','./base-app.js','./styles.css','./nutrition-data.js'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('nutritrack-beta-')&&key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim();});

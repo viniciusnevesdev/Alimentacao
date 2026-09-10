@@ -7,5 +7,18 @@
   "display": "standalone",
   "background_color": "#f6f8fb",
   "theme_color": "#10a66f",
-  "icons": []
+  "icons": [
+    {
+      "src": "icon-official-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-official-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
