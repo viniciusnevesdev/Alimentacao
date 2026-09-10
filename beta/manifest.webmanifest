@@ -1,0 +1,11 @@
+{
+  "name": "NutriTrack Beta",
+  "short_name": "NutriTrack β",
+  "description": "Versão beta isolada do app pessoal de alimentação e acompanhamento nutricional.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#10a66f",
+  "icons": []
+}
