@@ -1,5 +1,5 @@
-const CACHE = 'alimentacao-v1';
-const ASSETS = ['./', './index.html', './manifest.webmanifest'];
+const CACHE = 'alimentacao-v2';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './nutrition-data.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
