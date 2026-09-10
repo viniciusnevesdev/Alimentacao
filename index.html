@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#6d4aff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Alimentação" />
+  <title>Alimentação</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f5fb;
+      --card: rgba(255,255,255,.9);
+      --text: #191824;
+      --muted: #6f6c7c;
+      --line: rgba(25,24,36,.10);
+      --primary: #6d4aff;
+      --primary-soft: rgba(109,74,255,.12);
+      --good: #2f9e64;
+      --warn: #d28a17;
+      --bad: #d44c5b;
+      --shadow: 0 12px 30px rgba(35,24,80,.08);
+      --radius: 22px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111016;
+        --card: rgba(28,27,35,.94);
+        --text: #f4f2fb;
+        --muted: #aaa6ba;
+        --line: rgba(255,255,255,.09);
+        --primary-soft: rgba(109,74,255,.22);
+        --shadow: 0 12px 32px rgba(0,0,0,.24);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .app { width: min(760px, 100%); margin: 0 auto; padding: env(safe-area-inset-top) 16px calc(94px + env(safe-area-inset-bottom)); }
+    header { padding: 22px 4px 14px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+    h1 { margin:0; font-size:30px; letter-spacing:-.04em; }
+    .date-label { color:var(--muted); font-size:14px; margin-top:4px; }
+    .date-input { border:1px solid var(--line); background:var(--card); color:var(--text); border-radius:14px; padding:10px 12px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .metric { padding:16px; min-height:112px; }
+    .metric .label { font-size:13px; color:var(--muted); }
+    .metric .value { font-size:28px; font-weight:750; margin-top:8px; letter-spacing:-.04em; }
+    .metric .sub { color:var(--muted); font-size:12px; margin-top:4px; }
+    .progress { height:8px; background:var(--line); border-radius:999px; overflow:hidden; margin-top:12px; }
+    .progress > span { display:block; height:100%; width:0; background:var(--primary); border-radius:999px; transition:width .25s ease; }
+    .section { margin-top:16px; }
+    .section-title { display:flex; align-items:center; justify-content:space-between; margin:0 4px 8px; }
+    .section-title h2 { margin:0; font-size:18px; letter-spacing:-.02em; }
+    .small-btn { border:0; background:var(--primary-soft); color:var(--primary); border-radius:999px; padding:8px 11px; font-weight:650; }
+    .empty { padding:28px 20px; text-align:center; color:var(--muted); }
+    .meal-group { overflow:hidden; margin-bottom:10px; }
+    .meal-head { padding:13px 15px 9px; display:flex; justify-content:space-between; color:var(--muted); font-size:13px; font-weight:650; }
+    .entry { padding:13px 15px; border-top:1px solid var(--line); display:grid; grid-template-columns:1fr auto; gap:10px; align-items:start; }
+    .entry:first-of-type { border-top:0; }
+    .entry-name { font-weight:700; }
+    .entry-meta { color:var(--muted); font-size:13px; margin-top:3px; line-height:1.35; }
+    .entry-kcal { font-weight:750; white-space:nowrap; }
+    .entry-actions { display:flex; gap:8px; margin-top:8px; }
+    .link-btn { border:0; background:none; padding:0; color:var(--primary); font-size:12px; font-weight:650; }
+    .quality { display:inline-flex; align-items:center; gap:4px; border-radius:999px; padding:3px 7px; font-size:11px; font-weight:700; margin-left:6px; }
+    .q-good { color:var(--good); background:color-mix(in srgb, var(--good) 12%, transparent); }
+    .q-mid { color:var(--warn); background:color-mix(in srgb, var(--warn) 12%, transparent); }
+    .q-low { color:var(--bad); background:color-mix(in srgb, var(--bad) 12%, transparent); }
+    .fab { position:fixed; right:max(20px, calc((100vw - 760px)/2 + 20px)); bottom:calc(22px + env(safe-area-inset-bottom)); border:0; background:var(--primary); color:white; border-radius:20px; padding:15px 18px; font-weight:750; box-shadow:0 14px 30px rgba(109,74,255,.35); }
+    dialog { width:min(620px, calc(100% - 22px)); max-height:88vh; border:0; padding:0; border-radius:26px; background:var(--card); color:var(--text); box-shadow:0 25px 80px rgba(0,0,0,.3); }
+    dialog::backdrop { background:rgba(0,0,0,.42); backdrop-filter:blur(5px); }
+    .modal { padding:20px; overflow:auto; max-height:88vh; }
+    .modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+    .modal-head h2 { margin:0; font-size:22px; }
+    .icon-btn { width:38px; height:38px; border:0; border-radius:12px; background:var(--primary-soft); color:var(--text); }
+    form { display:grid; gap:12px; }
+    .field { display:grid; gap:6px; }
+    label { color:var(--muted); font-size:13px; font-weight:650; }
+    input, select, textarea { width:100%; border:1px solid var(--line); background:transparent; color:var(--text); border-radius:14px; padding:12px 13px; outline:none; }
+    textarea { min-height:82px; resize:vertical; }
+    input:focus, select:focus, textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-soft); }
+    .row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .quality-pills { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; }
+    .quality-pills input { display:none; }
+    .quality-pills label { text-align:center; padding:10px 4px; border:1px solid var(--line); border-radius:13px; color:var(--text); background:transparent; }
+    .quality-pills input:checked + label { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+    .primary-btn { border:0; border-radius:15px; background:var(--primary); color:#fff; padding:13px 16px; font-weight:750; }
+    .secondary-btn { border:1px solid var(--line); border-radius:15px; background:transparent; color:var(--text); padding:12px 14px; font-weight:650; }
+    .danger-btn { border:1px solid color-mix(in srgb, var(--bad) 35%, transparent); border-radius:15px; background:transparent; color:var(--bad); padding:12px 14px; font-weight:650; }
+    .settings-list { display:grid; gap:10px; }
+    .settings-card { border:1px solid var(--line); border-radius:16px; padding:14px; }
+    .settings-card h3 { margin:0 0 8px; font-size:15px; }
+    .settings-card p { margin:0 0 12px; color:var(--muted); font-size:13px; line-height:1.45; }
+    .hint { font-size:12px; color:var(--muted); line-height:1.45; }
+    @media (max-width:420px) { .row { grid-template-columns:1fr; } .metric .value { font-size:25px; } header { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Alimentação</h1>
+        <div class="date-label" id="prettyDate"></div>
+      </div>
+      <input class="date-input" id="selectedDate" type="date" aria-label="Data exibida" />
+    </header>
+
+    <section class="summary-grid" aria-label="Resumo do dia">
+      <article class="card metric">
+        <div class="label">Calorias</div>
+        <div class="value"><span id="totalCalories">0</span> <small style="font-size:14px;font-weight:600">kcal</small></div>
+        <div class="sub" id="calorieBalance">Meta: 2.000 kcal</div>
+        <div class="progress"><span id="calorieProgress"></span></div>
+      </article>
+      <article class="card metric">
+        <div class="label">Qualidade do dia</div>
+        <div class="value" id="qualityScore">—</div>
+        <div class="sub" id="qualityText">Sem registros</div>
+      </article>
+      <article class="card metric">
+        <div class="label">Proteínas</div>
+        <div class="value"><span id="proteinTotal">0</span><small style="font-size:14px;font-weight:600"> g</small></div>
+        <div class="sub">Somente itens preenchidos</div>
+      </article>
+      <article class="card metric">
+        <div class="label">Registros</div>
+        <div class="value" id="entryCount">0</div>
+        <div class="sub" id="mealCount">0 refeições</div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Refeições</h2>
+        <button class="small-btn" id="settingsBtn">Ajustes</button>
+      </div>
+      <div id="entries"></div>
+    </section>
+  </main>
+
+  <button class="fab" id="addBtn">＋ Registrar alimento</button>
+
+  <dialog id="entryDialog">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="entryDialogTitle">Novo registro</h2>
+        <button class="icon-btn" type="button" data-close="entryDialog">✕</button>
+      </div>
+      <form id="entryForm">
+        <input type="hidden" id="entryId" />
+        <div class="row">
+          <div class="field">
+            <label for="entryDate">Data</label>
+            <input id="entryDate" type="date" required />
+          </div>
+          <div class="field">
+            <label for="entryTime">Horário</label>
+            <input id="entryTime" type="time" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="meal">Refeição</label>
+          <select id="meal" required>
+            <option>Café da manhã</option>
+            <option>Lanche da manhã</option>
+            <option>Almoço</option>
+            <option>Lanche da tarde</option>
+            <option>Jantar</option>
+            <option>Ceia</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="food">Alimento / preparação</label>
+          <input id="food" autocomplete="off" placeholder="Ex.: arroz, frango grelhado, banana" required />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="amount">Quantidade</label>
+            <input id="amount" autocomplete="off" placeholder="Ex.: 120 g, 1 unidade" />
+          </div>
+          <div class="field">
+            <label for="calories">Calorias (kcal)</label>
+            <input id="calories" type="number" min="0" step="1" inputmode="decimal" placeholder="0" required />
+          </div>
+        </div>
+        <div class="field">
+          <label>Qualidade nutricional percebida</label>
+          <div class="quality-pills">
+            <input type="radio" name="quality" id="q1" value="1"><label for="q1">1</label>
+            <input type="radio" name="quality" id="q2" value="2"><label for="q2">2</label>
+            <input type="radio" name="quality" id="q3" value="3" checked><label for="q3">3</label>
+            <input type="radio" name="quality" id="q4" value="4"><label for="q4">4</label>
+            <input type="radio" name="quality" id="q5" value="5"><label for="q5">5</label>
+          </div>
+          <div class="hint">1 = baixa qualidade; 5 = alta qualidade. A nota é sua e não é um diagnóstico nutricional.</div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="protein">Proteína (g) · opcional</label><input id="protein" type="number" min="0" step="0.1" inputmode="decimal"></div>
+          <div class="field"><label for="carbs">Carboidratos (g) · opcional</label><input id="carbs" type="number" min="0" step="0.1" inputmode="decimal"></div>
+        </div>
+        <div class="field"><label for="fat">Gorduras (g) · opcional</label><input id="fat" type="number" min="0" step="0.1" inputmode="decimal"></div>
+        <div class="field"><label for="notes">Observações · opcional</label><textarea id="notes" placeholder="Fome, saciedade, contexto, marca, preparo..."></textarea></div>
+        <button class="primary-btn" type="submit">Salvar registro</button>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Ajustes</h2>
+        <button class="icon-btn" type="button" data-close="settingsDialog">✕</button>
+      </div>
+      <div class="settings-list">
+        <div class="settings-card">
+          <h3>Meta diária de calorias</h3>
+          <p>Serve apenas como referência visual do painel.</p>
+          <div class="row">
+            <input id="calorieGoal" type="number" min="0" step="50" inputmode="numeric" />
+            <button class="primary-btn" id="saveGoal" type="button">Salvar meta</button>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>Backup</h3>
+          <p>Exporte seus registros para um arquivo JSON e restaure depois no mesmo ou em outro aparelho.</p>
+          <div class="row">
+            <button class="secondary-btn" id="exportBtn" type="button">Exportar JSON</button>
+            <button class="secondary-btn" id="importBtn" type="button">Importar JSON</button>
+          </div>
+          <input id="importFile" type="file" accept="application/json,.json" hidden />
+        </div>
+        <div class="settings-card">
+          <h3>Apagar dados</h3>
+          <p>Remove todos os registros e ajustes salvos neste navegador.</p>
+          <button class="danger-btn" id="clearBtn" type="button">Apagar tudo</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const STORAGE_KEY = 'alimentacao-registros-v1';
+    const SETTINGS_KEY = 'alimentacao-ajustes-v1';
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => [...document.querySelectorAll(s)];
+    const today = () => new Date().toLocaleDateString('en-CA');
+    const nowTime = () => new Date().toTimeString().slice(0,5);
+    const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+    const num = (v) => Number(v || 0);
+    const fmt = (v, digits=0) => new Intl.NumberFormat('pt-BR',{maximumFractionDigits:digits}).format(v);
+
+    let entries = load(STORAGE_KEY, []);
+    let settings = load(SETTINGS_KEY, { calorieGoal: 2000 });
+
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+    }
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    }
+    function prettyDate(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      return new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'numeric',month:'long'}).format(d);
+    }
+    function qualityLabel(score) {
+      if (!score) return ['Sem registros',''];
+      if (score >= 4.2) return ['Muito boa','q-good'];
+      if (score >= 3.4) return ['Boa','q-good'];
+      if (score >= 2.6) return ['Mediana','q-mid'];
+      return ['Baixa','q-low'];
+    }
+    function weightedQuality(list) {
+      if (!list.length) return 0;
+      const withCalories = list.filter(e => num(e.calories) > 0);
+      if (withCalories.length) {
+        const total = withCalories.reduce((s,e)=>s+num(e.calories),0);
+        return withCalories.reduce((s,e)=>s+num(e.calories)*num(e.quality),0) / total;
+      }
+      return list.reduce((s,e)=>s+num(e.quality),0) / list.length;
+    }
+    function qualityClass(q) { return q >= 4 ? 'q-good' : q >= 3 ? 'q-mid' : 'q-low'; }
+
+    function render() {
+      const date = $('#selectedDate').value || today();
+      $('#prettyDate').textContent = prettyDate(date);
+      const list = entries.filter(e => e.date === date).sort((a,b)=>a.time.localeCompare(b.time));
+      const calories = list.reduce((s,e)=>s+num(e.calories),0);
+      const protein = list.reduce((s,e)=>s+num(e.protein),0);
+      const quality = weightedQuality(list);
+      const [qText] = qualityLabel(quality);
+      const meals = [...new Set(list.map(e=>e.meal))].length;
+      const goal = num(settings.calorieGoal);
+
+      $('#totalCalories').textContent = fmt(calories);
+      $('#proteinTotal').textContent = fmt(protein,1);
+      $('#entryCount').textContent = list.length;
+      $('#mealCount').textContent = `${meals} ${meals === 1 ? 'refeição' : 'refeições'}`;
+      $('#qualityScore').textContent = quality ? `${quality.toFixed(1)}/5` : '—';
+      $('#qualityText').textContent = qText;
+      $('#calorieProgress').style.width = goal ? `${Math.min(100, calories/goal*100)}%` : '0%';
+      if (!goal) $('#calorieBalance').textContent = 'Sem meta definida';
+      else if (calories <= goal) $('#calorieBalance').textContent = `Restam ${fmt(goal-calories)} kcal da meta de ${fmt(goal)}`;
+      else $('#calorieBalance').textContent = `${fmt(calories-goal)} kcal acima da meta de ${fmt(goal)}`;
+
+      const box = $('#entries');
+      if (!list.length) {
+        box.innerHTML = '<div class="card empty">Nenhum alimento registrado neste dia.</div>';
+        return;
+      }
+      const groups = {};
+      list.forEach(e => (groups[e.meal] ??= []).push(e));
+      const order = ['Café da manhã','Lanche da manhã','Almoço','Lanche da tarde','Jantar','Ceia','Outro'];
+      box.innerHTML = order.filter(m=>groups[m]).map(meal => {
+        const items = groups[meal];
+        const mealCalories = items.reduce((s,e)=>s+num(e.calories),0);
+        return `<div class="card meal-group">
+          <div class="meal-head"><span>${meal}</span><span>${fmt(mealCalories)} kcal</span></div>
+          ${items.map(e=>`<div class="entry">
+            <div>
+              <div class="entry-name">${escapeHtml(e.food)} <span class="quality ${qualityClass(num(e.quality))}">Q${e.quality}/5</span></div>
+              <div class="entry-meta">${escapeHtml(e.amount || 'Quantidade não informada')} · ${e.time}${macroLine(e)}</div>
+              ${e.notes ? `<div class="entry-meta">${escapeHtml(e.notes)}</div>` : ''}
+              <div class="entry-actions"><button class="link-btn" data-edit="${e.id}">Editar</button><button class="link-btn" data-delete="${e.id}">Excluir</button></div>
+            </div>
+            <div class="entry-kcal">${fmt(num(e.calories))} kcal</div>
+          </div>`).join('')}
+        </div>`;
+      }).join('');
+
+      $$('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+      $$('[data-delete]').forEach(b=>b.onclick=()=>removeEntry(b.dataset.delete));
+    }
+
+    function macroLine(e) {
+      const parts=[];
+      if (num(e.protein)) parts.push(`P ${fmt(num(e.protein),1)}g`);
+      if (num(e.carbs)) parts.push(`C ${fmt(num(e.carbs),1)}g`);
+      if (num(e.fat)) parts.push(`G ${fmt(num(e.fat),1)}g`);
+      return parts.length ? ` · ${parts.join(' · ')}` : '';
+    }
+    function escapeHtml(s='') { return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+    function openNew() {
+      $('#entryDialogTitle').textContent = 'Novo registro';
+      $('#entryForm').reset();
+      $('#entryId').value = '';
+      $('#entryDate').value = $('#selectedDate').value || today();
+      $('#entryTime').value = nowTime();
+      $('#q3').checked = true;
+      $('#entryDialog').showModal();
+      setTimeout(()=>$('#food').focus(),100);
+    }
+    function openEdit(id) {
+      const e = entries.find(x=>x.id===id); if (!e) return;
+      $('#entryDialogTitle').textContent = 'Editar registro';
+      $('#entryId').value=e.id; $('#entryDate').value=e.date; $('#entryTime').value=e.time; $('#meal').value=e.meal;
+      $('#food').value=e.food; $('#amount').value=e.amount||''; $('#calories').value=e.calories;
+      $(`input[name="quality"][value="${e.quality}"]`).checked=true;
+      $('#protein').value=e.protein||''; $('#carbs').value=e.carbs||''; $('#fat').value=e.fat||''; $('#notes').value=e.notes||'';
+      $('#entryDialog').showModal();
+    }
+    function removeEntry(id) {
+      if (!confirm('Excluir este registro?')) return;
+      entries = entries.filter(e=>e.id!==id); persist(); render();
+    }
+
+    $('#entryForm').addEventListener('submit', ev => {
+      ev.preventDefault();
+      const id = $('#entryId').value || uid();
+      const entry = {
+        id, date:$('#entryDate').value, time:$('#entryTime').value, meal:$('#meal').value,
+        food:$('#food').value.trim(), amount:$('#amount').value.trim(), calories:num($('#calories').value),
+        quality:num($('input[name="quality"]:checked').value), protein:num($('#protein').value),
+        carbs:num($('#carbs').value), fat:num($('#fat').value), notes:$('#notes').value.trim(), updatedAt:new Date().toISOString()
+      };
+      const i=entries.findIndex(e=>e.id===id); if(i>=0) entries[i]=entry; else entries.push(entry);
+      persist(); $('#selectedDate').value=entry.date; $('#entryDialog').close(); render();
+    });
+
+    $('#addBtn').onclick=openNew;
+    $('#settingsBtn').onclick=()=>{ $('#calorieGoal').value=settings.calorieGoal ?? 2000; $('#settingsDialog').showModal(); };
+    $('#selectedDate').onchange=render;
+    $$('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
+    $('#saveGoal').onclick=()=>{ settings.calorieGoal=num($('#calorieGoal').value); persist(); render(); $('#settingsDialog').close(); };
+
+    $('#exportBtn').onclick=()=>{
+      const payload={ app:'Alimentação', version:1, exportedAt:new Date().toISOString(), settings, entries };
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`alimentacao-backup-${today()}.json`; a.click(); URL.revokeObjectURL(a.href);
+    };
+    $('#importBtn').onclick=()=>$('#importFile').click();
+    $('#importFile').onchange=async ev=>{
+      const file=ev.target.files[0]; if(!file) return;
+      try {
+        const data=JSON.parse(await file.text());
+        if(!Array.isArray(data.entries)) throw new Error('Formato inválido');
+        if(!confirm(`Importar ${data.entries.length} registros e substituir os dados atuais?`)) return;
+        entries=data.entries; settings={...settings,...(data.settings||{})}; persist(); render(); $('#settingsDialog').close(); alert('Backup importado.');
+      } catch { alert('Não foi possível importar este arquivo.'); }
+      ev.target.value='';
+    };
+    $('#clearBtn').onclick=()=>{
+      if(!confirm('Apagar todos os registros e ajustes? Esta ação não pode ser desfeita sem backup.')) return;
+      entries=[]; settings={calorieGoal:2000}; persist(); render(); $('#settingsDialog').close();
+    };
+
+    $('#selectedDate').value=today();
+    render();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  </script>
+</body>
+</html>
