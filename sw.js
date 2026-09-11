@@ -1,4 +1,4 @@
-const CACHE='alimentacao-v11';
+const CACHE='alimentacao-v12';
 const ASSETS=['./','./index.html','./menu.html','./styles.css','./layout-fixes.css','./app.js','./nutrition-data.js','./manifest.webmanifest','./icon-official-192.png','./icon-official-512.png','./apple-touch-icon.png','./favicon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim()});
