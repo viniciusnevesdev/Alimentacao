@@ -99,13 +99,19 @@
       function fullSvg(icon){var active=saved[icon.id]||icon;return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+active.viewBox+'">'+active.content+'</svg>'}
       function renderEditor(){var icon=byId[selected];document.getElementById("selected-name").textContent=icon.label;document.getElementById("selected-preview").innerHTML=svgMarkup(icon);code.value=fullSvg(icon);status.className="status";status.textContent=saved[selected]?"Alteração pendente de exportação.":"Ícone original da Beta."}
       function safeSvg(raw,defaultViewBox){
-        var source=raw.trim();if(!source)throw new Error("Cole um SVG ou os elementos internos dele.");
-        if(source.indexOf("<svg")!==0)source='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+defaultViewBox+'">'+source+'</svg>';
+        var source=raw.trim();
+        source=source.replace(/^\x60\x60\x60(?:svg|xml)?\s*/i,"").replace(/\s*\x60\x60\x60$/,"");
+        source=source.replace(/^<\?xml[\s\S]*?\?>\s*/i,"").replace(/^<!DOCTYPE[^>]*>\s*/i,"").trim();
+        if(!source)throw new Error("Cole o código SVG antes de testar.");
+        var svgAt=source.search(/<svg\b/i);
+        if(svgAt>0)source=source.slice(svgAt);
+        if(svgAt<0)source='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+defaultViewBox+'">'+source+'</svg>';
         var doc=new DOMParser().parseFromString(source,"image/svg+xml");
-        if(doc.querySelector("parsererror")||!doc.documentElement||doc.documentElement.localName!=="svg")throw new Error("Código SVG inválido.");
+        if(doc.querySelector("parsererror")||!doc.documentElement||doc.documentElement.localName.toLowerCase()!=="svg")throw new Error("Não consegui ler este SVG. Ele precisa conter <svg>…</svg> ou caminhos SVG válidos.");
         doc.querySelectorAll("script,foreignObject,iframe,object,embed,animate,animateMotion,animateTransform,set").forEach(function(el){el.remove()});
         doc.querySelectorAll("*").forEach(function(el){Array.prototype.slice.call(el.attributes).forEach(function(a){var n=a.name.toLowerCase(),v=a.value.trim().toLowerCase();if(n.indexOf("on")===0||((n==="href"||n==="xlink:href"||n==="src")&&v.indexOf("#")!==0))el.removeAttribute(a.name)})});
         var root=doc.documentElement,inner="";Array.prototype.slice.call(root.childNodes).forEach(function(node){inner+=new XMLSerializer().serializeToString(node)});
+        if(!inner.trim())throw new Error("O SVG não contém formas visíveis para usar como ícone.");
         return {viewBox:root.getAttribute("viewBox")||defaultViewBox,content:inner};
       }
       function writeSymbol(id){
