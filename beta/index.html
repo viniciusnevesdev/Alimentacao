@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="NutriTrack Beta">
   <title>NutriTrack Beta</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=10">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=10">\n  <link rel="icon" type="image/png" href="./favicon.png?v=10">\n  <link rel="stylesheet" href="./styles.css?v=6">
+  <link rel="manifest" href="./manifest.webmanifest?v=11">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=11">\n  <link rel="icon" type="image/png" href="./favicon.png?v=11">\n  <link rel="stylesheet" href="./styles.css?v=6">
   <link rel="stylesheet" href="../layout-fixes.css?v=6">
   <link rel="stylesheet" href="./tab-animation.css?v=9">
   <style>.beta-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;color:#0f172a;background:#f8fafc}.beta-boot p{color:#64748b}</style>
@@ -20,7 +20,7 @@
   <script>
   (async()=>{
     try{
-      const response=await fetch('./base-index.html?v=10',{cache:'no-store'});
+      const response=await fetch('./base-index.html?v=11',{cache:'no-store'});
       if(!response.ok) throw new Error('Falha ao carregar a interface');
       const source=await response.text();
       let body=source.match(/<body>([\s\S]*?)<\/body>/i)?.[1];
