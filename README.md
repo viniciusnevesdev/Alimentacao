@@ -55,6 +55,11 @@ Assim, itens muito pequenos não dominam a nota do dia.
 
 - Registros, metas e hidratação ficam no `localStorage` do navegador.
 - Exportação e restauração por JSON.
+- Backups usam um esquema versionado (`backupSchemaVersion`) compartilhado entre Oficial e Beta.
+- A Beta preserva os campos-base usados pela Oficial; campos experimentais novos devem ser apenas aditivos.
+- Mudanças incompatíveis de estrutura exigem migração explícita antes de elevar a versão do esquema.
+- Backups antigos sem `backupSchemaVersion` continuam sendo tratados como esquema v1.
+- Se um backup vier de um esquema mais novo, a versão atual importa os campos conhecidos e avisa que dados adicionais podem ser ignorados.
 - Compatibilidade com os registros das versões anteriores.
 - O app não exibe integrações simuladas com Apple Watch ou iCloud como se fossem conexões reais.
 - Service worker com cache offline dos arquivos essenciais.
