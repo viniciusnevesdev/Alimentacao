@@ -9,146 +9,85 @@
   <link rel="apple-touch-icon" href="../icon-menu-192.png?v=2">
   <title>Laboratório de Ícones</title>
   <style>
-    :root{--bg:#eff8f3;--surface:#fff;--surface2:#f7fbf9;--text:#12251b;--muted:#55705f;--line:#d9e8df;--accent:#0a9b51;--accent2:#087e43;--danger:#b02a37;--shadow:0 14px 35px rgba(16,69,41,.11)}
-    @media(prefers-color-scheme:dark){:root{--bg:#0e1712;--surface:#18241d;--surface2:#121d16;--text:#edf8f0;--muted:#adc5b5;--line:#2b4133;--accent:#38d57b;--accent2:#20b963;--danger:#ff8791;--shadow:0 14px 35px rgba(0,0,0,.24)}}
-    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(92,235,146,.2),transparent 28%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    main{max-width:850px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 18px calc(42px + env(safe-area-inset-bottom))}
-    h1{font-size:clamp(1.55rem,5vw,2.2rem);line-height:1.08;margin:4px 0 10px;letter-spacing:-.04em} p{line-height:1.48}.lead{margin:0;color:var(--muted);max-width:650px}
-    .notice{margin:22px 0 18px;padding:13px 15px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--surface) 83%,transparent);color:var(--muted);font-size:.92rem}
-    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.tab{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:12px 8px;border-radius:14px;font-weight:750;font-size:.9rem;cursor:pointer}.tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
-    .grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(185px,.7fr);gap:18px}.panel{background:var(--surface);border:1px solid var(--line);border-radius:21px;padding:18px;box-shadow:var(--shadow)}.panel h2{font-size:1.06rem;margin:0 0 7px}.help{margin:0 0 14px;color:var(--muted);font-size:.9rem}
-    textarea{display:block;width:100%;min-height:278px;resize:vertical;border:1px solid var(--line);border-radius:14px;background:var(--surface2);color:var(--text);padding:13px;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
-    .preview-wrap{display:grid;place-items:center;min-height:238px;padding:20px;border-radius:20px;background:linear-gradient(145deg,#b8f6cc,#008e4b);overflow:hidden}.preview{width:min(100%,210px);aspect-ratio:1;border-radius:24%;object-fit:cover;background:rgba(255,255,255,.18);box-shadow:0 15px 30px rgba(0,54,28,.3)}.empty{width:min(100%,210px);aspect-ratio:1;border-radius:24%;display:grid;place-items:center;text-align:center;padding:22px;color:#fff;background:rgba(0,70,35,.22);font-weight:700;line-height:1.3}
-    .status{min-height:21px;margin:10px 2px 0;color:var(--muted);font-size:.85rem}.status.error{color:var(--danger)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}.action{border:0;border-radius:13px;padding:12px 8px;background:var(--accent);color:#fff;font-weight:800;font-size:.83rem;cursor:pointer}.action.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--line)}.action:disabled{cursor:not-allowed;opacity:.52}
-    .footer{margin:22px 0 0;color:var(--muted);font-size:.85rem}.code-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.code-label strong{font-size:.96rem}.hint{font-size:.78rem;color:var(--muted)}
-    @media(max-width:620px){.grid{grid-template-columns:1fr}.preview-wrap{min-height:185px}.preview,.empty{width:170px}.actions{grid-template-columns:1fr}.panel{padding:15px}}
+    :root{--bg:#eff8f3;--surface:#fff;--surface2:#f7fbf9;--text:#12251b;--muted:#55705f;--line:#d9e8df;--accent:#07994e;--accent2:#087b42;--danger:#b42331;--shadow:0 14px 35px rgba(16,69,41,.11)}
+    @media(prefers-color-scheme:dark){:root{--bg:#0b0d0c;--surface:#171b19;--surface2:#101412;--text:#f0f8f3;--muted:#aec4b6;--line:#2a3930;--accent:#35d377;--accent2:#21b963;--danger:#ff8991;--shadow:0 14px 35px rgba(0,0,0,.28)}}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(92,235,146,.19),transparent 28%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1180px;margin:0 auto;padding:max(25px,env(safe-area-inset-top)) 18px calc(42px + env(safe-area-inset-bottom))}
+    h1{font-size:clamp(1.6rem,5vw,2.3rem);letter-spacing:-.045em;line-height:1.05;margin:4px 0 10px}.lead{margin:0;max-width:750px;color:var(--muted);line-height:1.48}.notice{margin:21px 0;padding:13px 15px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--muted);font-size:.92rem;line-height:1.45}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow);min-width:0}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.card h2{font-size:1.08rem;margin:0}.tag{border-radius:999px;padding:5px 8px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent2);font-size:.72rem;font-weight:850;white-space:nowrap}.help{margin:6px 0 13px;color:var(--muted);font-size:.86rem;line-height:1.4}
+    .home-preview{position:relative;min-height:194px;display:grid;place-items:center;overflow:hidden;border-radius:18px;background:linear-gradient(150deg,#c3f7d2,#0b9b55 52%,#00683a);padding:20px}.home-preview:after{content:"";position:absolute;width:230px;height:230px;right:-90px;bottom:-130px;border-radius:50%;background:rgba(255,255,255,.18);filter:blur(10px)}.home-item{position:relative;z-index:1;display:grid;justify-items:center;gap:8px;color:#fff;text-align:center;text-shadow:0 1px 4px rgba(0,0,0,.23)}.app-icon{width:118px;height:118px;object-fit:cover;border-radius:24%;background:rgba(0,70,35,.2);box-shadow:0 11px 20px rgba(0,62,30,.3)}.placeholder{width:118px;height:118px;border-radius:24%;display:grid;place-items:center;padding:14px;background:rgba(0,72,34,.26);font-weight:800;font-size:.87rem;line-height:1.25}.app-name{font-size:.87rem;font-weight:750;max-width:154px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    label{display:block;margin:14px 0 7px;font-size:.84rem;font-weight:800}textarea{display:block;width:100%;min-height:230px;resize:vertical;border:1px solid var(--line);border-radius:13px;background:var(--surface2);color:var(--text);padding:11px;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 21%,transparent)}.status{min-height:21px;margin:8px 1px 0;color:var(--muted);font-size:.8rem;line-height:1.3}.status.error{color:var(--danger)}
+    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0 0}.action{appearance:none;border:0;border-radius:14px;padding:13px 10px;background:var(--accent);color:#fff;font-weight:850;font-size:.88rem;cursor:pointer}.action.secondary{background:var(--surface);border:1px solid var(--line);color:var(--text)}.action:disabled{opacity:.55;cursor:not-allowed}.footer{margin:16px 0 0;color:var(--muted);font-size:.85rem;line-height:1.4}
+    @media(max-width:900px){.cards{grid-template-columns:1fr}.home-preview{min-height:178px}.app-icon,.placeholder{width:112px;height:112px}textarea{min-height:175px}}@media(max-width:480px){.actions{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <main>
     <h1>Laboratório de ícones</h1>
-    <p class="lead">Cole SVGs, teste o recorte de ícone e exporte as escolhas. Esta página é independente: não altera os apps Oficial, Beta ou Menu.</p>
-    <p class="notice">O ZIP guarda os SVGs originais e um arquivo de seleção. Baixe-o e envie-o nesta conversa quando quiser que eu aplique um dos ícones — por exemplo, somente na versão Beta.</p>
+    <p class="lead">Veja os três PWAs ao mesmo tempo. Cada código SVG atualiza a prévia correspondente na hora, sem modificar os aplicativos publicados.</p>
+    <p class="notice">No final, baixe o ZIP e envie-o aqui. Ele contém cada SVG e um mapa com os arquivos exatos que devem ser substituídos no Oficial, Beta e Menu Geral.</p>
 
-    <div class="tabs" role="tablist" aria-label="Tipo de ícone">
-      <button class="tab active" type="button" data-target="official">Oficial</button>
-      <button class="tab" type="button" data-target="beta">Beta</button>
-      <button class="tab" type="button" data-target="menu">Menu geral</button>
-    </div>
-
-    <section class="grid">
-      <div class="panel">
-        <div class="code-label"><strong id="editor-title">SVG do ícone Oficial</strong><span class="hint">Cole somente o código &lt;svg&gt;</span></div>
-        <p class="help">Use um <code>viewBox</code> quadrado, de preferência <code>0 0 512 512</code>, para evitar corte no ícone.</p>
-        <textarea id="svg-input" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">…</svg>' aria-label="Código SVG"></textarea>
-        <div class="status" id="status" aria-live="polite">Nenhum SVG selecionado.</div>
-      </div>
-      <div class="panel">
-        <h2>Prévia</h2>
-        <p class="help">Simulação do ícone na Tela de Início.</p>
-        <div class="preview-wrap" id="preview-wrap"><div class="empty" id="empty">Cole um SVG<br>para visualizar</div><img id="preview" class="preview" hidden alt="Prévia do ícone"></div>
-        <p class="help" style="margin:13px 0 0">A prévia remove códigos potencialmente ativos. O SVG exportado é esse mesmo SVG tratado.</p>
-      </div>
-    </section>
+    <div class="cards" id="cards"></div>
 
     <div class="actions">
-      <button class="action secondary" type="button" id="copy">Copiar código</button>
-      <button class="action secondary" type="button" id="json">Baixar JSON</button>
-      <button class="action" type="button" id="zip">Baixar ZIP</button>
+      <button class="action secondary" id="copy" type="button">Copiar configuração</button>
+      <button class="action secondary" id="json" type="button">Baixar JSON</button>
+      <button class="action" id="zip" type="button">Baixar ZIP para aplicar</button>
     </div>
-    <p class="footer">As escolhas ficam guardadas apenas neste navegador até você limpar os dados do site.</p>
+    <p class="footer">Use SVG quadrado, de preferência com <code>viewBox="0 0 512 512"</code>. As escolhas ficam salvas somente neste navegador.</p>
   </main>
 
   <script>
     (function(){
-      var keys=["official","beta","menu"];
-      var labels={official:"Oficial",beta:"Beta",menu:"Menu geral"};
-      var selected="official";
-      var input=document.getElementById("svg-input");
-      var preview=document.getElementById("preview");
-      var empty=document.getElementById("empty");
-      var status=document.getElementById("status");
-      var editorTitle=document.getElementById("editor-title");
-      var saved={official:"",beta:"",menu:""};
+      var STORAGE="alimentacao-icon-lab-v2";
+      var oldStorage="alimentacao-icon-lab-v1";
+      var targets={
+        official:{label:"Oficial",appName:"Alimentação",folder:"oficial",files:["icon-official-192.png","icon-official-512.png","apple-touch-icon.png","favicon.png"]},
+        beta:{label:"Beta",appName:"Alimentação Beta",folder:"beta",files:["beta/icon-beta-192.png","beta/icon-beta-512.png","beta/apple-touch-icon.png","beta/favicon.png"]},
+        menu:{label:"Menu geral",appName:"Menu Alimentação",folder:"menu-geral",files:["icon-menu-192.png","icon-menu-512.png","apple-touch-icon-menu.png","favicon-menu.png"]}
+      };
+      var keys=Object.keys(targets),saved={official:"",beta:"",menu:""};
+      try{var prior=JSON.parse(localStorage.getItem(STORAGE)||localStorage.getItem(oldStorage)||"{}");keys.forEach(function(k){saved[k]=typeof prior[k]==="string"?prior[k]:""})}catch(e){}
+      var cards=document.getElementById("cards");
 
-      try{var prior=JSON.parse(localStorage.getItem("alimentacao-icon-lab-v1")||"{}");keys.forEach(function(k){saved[k]=typeof prior[k]==="string"?prior[k]:""})}catch(e){}
+      function esc(s){return s.replace(/[&<>"']/g,function(ch){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[ch]})}
+      keys.forEach(function(key){
+        var item=targets[key];
+        cards.insertAdjacentHTML("beforeend",'<section class="card" data-key="'+key+'"><div class="card-head"><h2>'+item.label+'</h2><span class="tag">PWA '+item.label+'</span></div><p class="help">Prévia de como este ícone aparecerá na Tela de Início.</p><div class="home-preview"><div class="home-item"><div class="placeholder" id="empty-'+key+'">Cole o SVG<br>deste ícone</div><img class="app-icon" id="image-'+key+'" hidden alt="Prévia do ícone '+item.label+'"><span class="app-name">'+item.appName+'</span></div></div><label for="input-'+key+'">Código SVG — '+item.label+'</label><textarea id="input-'+key+'" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="&lt;svg viewBox=&quot;0 0 512 512&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;…&lt;/svg&gt;"></textarea><div class="status" id="status-'+key+'" aria-live="polite">Nenhum SVG selecionado.</div></section>');
+        document.getElementById("input-"+key).value=saved[key];
+      });
 
       function cleanSvg(raw){
         var doc=new DOMParser().parseFromString(raw,"image/svg+xml");
-        if(doc.querySelector("parsererror")||!doc.documentElement||doc.documentElement.localName!=="svg") throw new Error("Cole um SVG válido, começando por <svg>.");
+        if(doc.querySelector("parsererror")||!doc.documentElement||doc.documentElement.localName!=="svg")throw new Error("Cole um SVG válido, começando por <svg>.");
         doc.querySelectorAll("script,foreignObject,iframe,object,embed,animate,animateMotion,animateTransform,set").forEach(function(el){el.remove()});
-        doc.querySelectorAll("*").forEach(function(el){
-          Array.prototype.slice.call(el.attributes).forEach(function(a){
-            var n=a.name.toLowerCase(),v=a.value.trim().toLowerCase();
-            if(n.indexOf("on")===0||((n==="href"||n==="xlink:href"||n==="src")&&v.indexOf("#")!==0)) el.removeAttribute(a.name);
-          });
-        });
+        doc.querySelectorAll("*").forEach(function(el){Array.prototype.slice.call(el.attributes).forEach(function(a){var n=a.name.toLowerCase(),v=a.value.trim().toLowerCase();if(n.indexOf("on")===0||((n==="href"||n==="xlink:href"||n==="src")&&v.indexOf("#")!==0))el.removeAttribute(a.name)})});
         var svg=doc.documentElement;
-        if(!svg.getAttribute("viewBox")){
-          var w=parseFloat(svg.getAttribute("width")),h=parseFloat(svg.getAttribute("height"));
-          svg.setAttribute("viewBox",(isFinite(w)&&isFinite(h))?"0 0 "+w+" "+h:"0 0 512 512");
-        }
+        if(!svg.getAttribute("viewBox")){var w=parseFloat(svg.getAttribute("width")),h=parseFloat(svg.getAttribute("height"));svg.setAttribute("viewBox",(isFinite(w)&&isFinite(h))?"0 0 "+w+" "+h:"0 0 512 512")}
         svg.setAttribute("xmlns","http://www.w3.org/2000/svg");
         return new XMLSerializer().serializeToString(svg);
       }
-      function persist(){localStorage.setItem("alimentacao-icon-lab-v1",JSON.stringify(saved))}
-      function update(){
-        editorTitle.textContent="SVG do ícone "+labels[selected];
-        input.value=saved[selected];
-        document.querySelectorAll(".tab").forEach(function(b){b.classList.toggle("active",b.dataset.target===selected)});
-        render(saved[selected],false);
+      function persist(){localStorage.setItem(STORAGE,JSON.stringify(saved))}
+      function setPreview(key,raw,fromInput){
+        var img=document.getElementById("image-"+key),empty=document.getElementById("empty-"+key),status=document.getElementById("status-"+key),input=document.getElementById("input-"+key);
+        if(!raw.trim()){img.hidden=true;empty.hidden=false;status.textContent="Nenhum SVG selecionado.";status.className="status";return}
+        try{var clean=cleanSvg(raw);if(fromInput){saved[key]=clean;persist();input.value=clean}img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(clean);img.hidden=false;empty.hidden=true;status.textContent="SVG válido e salvo.";status.className="status"}catch(err){img.hidden=true;empty.hidden=false;status.textContent=err.message;status.className="status error"}
       }
-      function render(raw,fromInput){
-        if(!raw.trim()){preview.hidden=true;empty.hidden=false;status.textContent="Nenhum SVG selecionado.";status.className="status";return}
-        try{
-          var clean=cleanSvg(raw);
-          if(fromInput){saved[selected]=clean;persist();input.value=clean}
-          preview.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(clean);
-          preview.hidden=false;empty.hidden=true;status.textContent="SVG válido e salvo para "+labels[selected]+".";status.className="status";
-        }catch(err){preview.hidden=true;empty.hidden=false;status.textContent=err.message;status.className="status error"}
+      keys.forEach(function(key){var input=document.getElementById("input-"+key);input.addEventListener("input",function(){setPreview(key,input.value,true)});setPreview(key,saved[key],false)});
+
+      function buildPackage(){
+        var icons={};keys.forEach(function(key){if(saved[key])icons[key]={label:targets[key].label,svgPath:"icons/"+targets[key].folder+".svg",svg:saved[key],replaceFiles:targets[key].files}});
+        return {format:"alimentacao-icon-package",version:2,createdAt:new Date().toISOString(),instructions:"Cada SVG deve gerar PNGs nos tamanhos exigidos e substituir somente os arquivos listados em replaceFiles.",icons:icons};
       }
-      document.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){selected=b.dataset.target;update()})});
-      input.addEventListener("input",function(){render(input.value,true)});
-      function packageData(){
-        var icons={};
-        keys.forEach(function(k){if(saved[k]) icons[k]={label:labels[k],svg:saved[k]}});
-        return {format:"alimentacao-icon-selection",version:1,createdAt:new Date().toISOString(),icons:icons};
-      }
-      function needOne(){if(keys.some(function(k){return !!saved[k]}))return true;status.textContent="Cole pelo menos um SVG antes de exportar.";status.className="status error";return false}
-      function download(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},500)}
-      document.getElementById("copy").addEventListener("click",function(){
-        if(!needOne())return;
-        var code=JSON.stringify(packageData(),null,2);
-        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(function(){status.textContent="Código de seleção copiado.";status.className="status"},function(){status.textContent="Não foi possível copiar. Use Baixar JSON.";status.className="status error"})}
-        else {status.textContent="Seu navegador não permite copiar aqui. Use Baixar JSON.";status.className="status error"}
-      });
-      document.getElementById("json").addEventListener("click",function(){if(needOne())download(new Blob([JSON.stringify(packageData(),null,2)],{type:"application/json"}),"alimentacao-selecao-de-icones.json")});
+      function requireIcon(){if(keys.some(function(k){return !!saved[k]}))return true;keys.forEach(function(k){var s=document.getElementById("status-"+k);s.textContent="Cole pelo menos um SVG antes de exportar.";s.className="status error"});return false}
+      function download(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},700)}
+      document.getElementById("copy").addEventListener("click",function(){if(!requireIcon())return;var value=JSON.stringify(buildPackage(),null,2);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(value).then(function(){keys.forEach(function(k){document.getElementById("status-"+k).textContent="Configuração copiada."})},function(){alert("Não foi possível copiar. Use Baixar JSON.")});else alert("Seu navegador não permite copiar aqui. Use Baixar JSON.")});
+      document.getElementById("json").addEventListener("click",function(){if(requireIcon())download(new Blob([JSON.stringify(buildPackage(),null,2)],{type:"application/json"}),"alimentacao-icones-configuracao.json")});
 
       function crc32(bytes){var c=0xffffffff;for(var i=0;i<bytes.length;i++){c^=bytes[i];for(var j=0;j<8;j++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^0xffffffff)>>>0}
-      function u16(arr,pos,n){arr[pos]=n&255;arr[pos+1]=(n>>>8)&255}
-      function u32(arr,pos,n){arr[pos]=n&255;arr[pos+1]=(n>>>8)&255;arr[pos+2]=(n>>>16)&255;arr[pos+3]=(n>>>24)&255}
-      function zipStore(files){
-        var enc=new TextEncoder(),parts=[],central=[],offset=0;
-        files.forEach(function(file){
-          var name=enc.encode(file.name),data=enc.encode(file.content),crc=crc32(data);
-          var local=new Uint8Array(30+name.length+data.length);
-          u32(local,0,0x04034b50);u16(local,4,20);u16(local,6,0);u16(local,8,0);u16(local,10,0);u16(local,12,0);u32(local,14,crc);u32(local,18,data.length);u32(local,22,data.length);u16(local,26,name.length);u16(local,28,0);local.set(name,30);local.set(data,30+name.length);parts.push(local);
-          var cd=new Uint8Array(46+name.length);
-          u32(cd,0,0x02014b50);u16(cd,4,20);u16(cd,6,20);u16(cd,8,0);u16(cd,10,0);u16(cd,12,0);u16(cd,14,0);u32(cd,16,crc);u32(cd,20,data.length);u32(cd,24,data.length);u16(cd,28,name.length);u16(cd,30,0);u16(cd,32,0);u16(cd,34,0);u16(cd,36,0);u32(cd,38,0);u32(cd,42,offset);cd.set(name,46);central.push(cd);offset+=local.length;
-        });
-        var csize=central.reduce(function(n,p){return n+p.length},0),end=new Uint8Array(22);
-        u32(end,0,0x06054b50);u16(end,4,0);u16(end,6,0);u16(end,8,files.length);u16(end,10,files.length);u32(end,12,csize);u32(end,16,offset);u16(end,20,0);
-        return new Blob(parts.concat(central,[end]),{type:"application/zip"});
-      }
-      document.getElementById("zip").addEventListener("click",function(){
-        if(!needOne())return;
-        var data=packageData(),files=[{name:"selecao-de-icones.json",content:JSON.stringify(data,null,2)},{name:"LEIA-ME.txt",content:"Envie este ZIP nesta conversa e indique qual icone deve ser aplicado. Os SVGs originais estao na pasta icons/."}];
-        keys.forEach(function(k){if(saved[k])files.push({name:"icons/"+k+".svg",content:saved[k]})});
-        download(zipStore(files),"alimentacao-icones-svg.zip");
-        status.textContent="ZIP criado. Envie-o aqui quando quiser aplicar um ícone.";status.className="status";
-      });
+      function u16(a,p,n){a[p]=n&255;a[p+1]=(n>>>8)&255}function u32(a,p,n){a[p]=n&255;a[p+1]=(n>>>8)&255;a[p+2]=(n>>>16)&255;a[p+3]=(n>>>24)&255}
+      function zipStore(files){var enc=new TextEncoder(),parts=[],central=[],offset=0;files.forEach(function(file){var name=enc.encode(file.name),data=enc.encode(file.content),crc=crc32(data),local=new Uint8Array(30+name.length+data.length);u32(local,0,0x04034b50);u16(local,4,20);u16(local,6,0);u16(local,8,0);u16(local,10,0);u16(local,12,0);u32(local,14,crc);u32(local,18,data.length);u32(local,22,data.length);u16(local,26,name.length);u16(local,28,0);local.set(name,30);local.set(data,30+name.length);parts.push(local);var cd=new Uint8Array(46+name.length);u32(cd,0,0x02014b50);u16(cd,4,20);u16(cd,6,20);u16(cd,8,0);u16(cd,10,0);u16(cd,12,0);u16(cd,14,0);u32(cd,16,crc);u32(cd,20,data.length);u32(cd,24,data.length);u16(cd,28,name.length);u16(cd,30,0);u16(cd,32,0);u16(cd,34,0);u16(cd,36,0);u32(cd,38,0);u32(cd,42,offset);cd.set(name,46);central.push(cd);offset+=local.length});var csize=central.reduce(function(n,p){return n+p.length},0),end=new Uint8Array(22);u32(end,0,0x06054b50);u16(end,4,0);u16(end,6,0);u16(end,8,files.length);u16(end,10,files.length);u32(end,12,csize);u32(end,16,offset);u16(end,20,0);return new Blob(parts.concat(central,[end]),{type:"application/zip"})}
+      document.getElementById("zip").addEventListener("click",function(){if(!requireIcon())return;var pack=buildPackage(),files=[{name:"selecao-de-icones.json",content:JSON.stringify(pack,null,2)},{name:"LEIA-ME.txt",content:"Envie este ZIP nesta conversa. O arquivo selecao-de-icones.json informa com precisao os arquivos que cada SVG deve substituir."}];keys.forEach(function(key){if(saved[key])files.push({name:"icons/"+targets[key].folder+".svg",content:saved[key]})});download(zipStore(files),"alimentacao-icones-para-aplicar.zip");keys.forEach(function(k){document.getElementById("status-"+k).textContent="ZIP criado. Envie-o aqui quando terminar."})});
       if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(function(){});
-      update();
     })();
   </script>
 </body>
