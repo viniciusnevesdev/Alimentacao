@@ -35,7 +35,7 @@
   }
 
   const script=document.createElement('script');
-  script.src='./base-app.js?v=12';
+  script.src='./base-app.js?v=13';
   script.onload=()=>{};
   script.onerror=()=>alert('Não foi possível iniciar a versão Beta.');
   document.body.appendChild(script);
