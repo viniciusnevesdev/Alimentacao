@@ -5,31 +5,25 @@
 
 /* Data e horário: manter exatamente o mesmo footprint visual dos demais campos no iOS/Safari */
 #entryDialog .entry-meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-#entryDialog .entry-meta-grid>.field{width:100%;max-width:100%;min-width:0;overflow:hidden}
+#entryDialog .entry-meta-grid>.field{width:100%;max-width:100%;min-width:0;overflow:visible}
 #entryDialog #entryDate,
 #entryDialog #entryTime{
   display:block;
-  inline-size:100%;
   width:100%;
-  max-inline-size:100%;
   max-width:100%;
-  min-inline-size:0;
   min-width:0;
-  height:38px;
-  min-height:38px;
-  max-height:38px;
   box-sizing:border-box;
-  padding:0 11px;
-  line-height:38px;
+  padding:10px 11px;
   font-size:12px;
   border-radius:11px;
+  line-height:normal;
+  -webkit-appearance:auto;
+  appearance:auto;
 }
 #entryDialog #entryDate::-webkit-date-and-time-value,
 #entryDialog #entryTime::-webkit-date-and-time-value{
   margin:0;
   padding:0;
-  min-height:0;
-  line-height:38px;
   text-align:left;
 }
 #entryDialog #entryDate::-webkit-datetime-edit,
