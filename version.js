@@ -1,1 +1,1 @@
-window.NutriTrackVersions=Object.freeze({official:'1.0.1',beta:'1.3.4-beta'});
+window.NutriTrackVersions=Object.freeze({official:'1.0.2',beta:'1.3.5-beta'});
