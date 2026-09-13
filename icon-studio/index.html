@@ -24,9 +24,9 @@
 </head>
 <body>
   <main>
-    <h1>Laboratório de ícones da Beta</h1>
+    <h1>Laboratório de ícones</h1>
     <p class="lead">Edite os ícones que aparecem dentro das telas do app. A janela ao lado é a própria versão Beta, então você pode navegar por suas abas e ver cada troca no lugar real.</p>
-    <p class="notice">Isto não altera ícone de Tela de Início, manifest ou favicon. O ZIP exporta somente os símbolos SVG internos que você modificou na interface.</p>
+    <p class="notice">Isto não altera ícone de Tela de Início, manifest ou favicon. <strong>Exportar todos os ícones</strong> cria o arquivo completo que posso transformar nos novos padrões da Oficial, Beta e deste editor.</p>
 
     <div class="layout">
       <section class="panel side">
@@ -49,11 +49,12 @@
     </div>
 
     <div class="actions">
-      <button class="action" id="copy" type="button">Copiar configuração</button>
-      <button class="action" id="json" type="button">Baixar JSON</button>
-      <button class="action primary" id="zip" type="button">Baixar ZIP das alterações</button>
+      <button class="action" id="copy" type="button">Copiar alterações</button>
+      <button class="action" id="json" type="button">Baixar alterações</button>
+      <button class="action primary" id="export-all" type="button">Exportar todos os ícones</button>
+      <button class="action" id="zip" type="button">Baixar ZIP das alterações</button>
     </div>
-    <p class="footer">O ZIP traz somente os ícones modificados e informa que todos pertencem a <code>beta/base-index.html</code>. Envie-o aqui para eu aplicar a alteração na Beta.</p>
+    <p class="footer"><strong>Exportar todos os ícones</strong> baixa <code>icon-overrides.json</code> com os 29 ícones atuais, inclusive os personalizados neste aparelho. Envie-o aqui para que eles se tornem os padrões da Oficial, da Beta e deste editor. O ZIP continua disponível quando você quiser enviar somente alterações pontuais.</p>
   </main>
   <script>
     (function(){
@@ -130,10 +131,12 @@
       renderGrid();renderEditor();
 
       function packageData(){var changes=[];Object.keys(saved).forEach(function(id){if(saved[id]){var icon=byId[id];changes.push({symbolId:id,label:icon.label,sourceFile:"beta/base-index.html",viewBox:saved[id].viewBox,renderMode:iconMode(icon),svg:fullSvg(icon)})}});return {format:"alimentacao-beta-interface-icons",version:1,createdAt:new Date().toISOString(),target:{file:"beta/base-index.html",selector:".svg-sprite symbol",instruction:"Substituir somente os symbols identificados em changes; não alterar ícones de Tela de Início, manifest ou favicon."},changes:changes}}
+      function completeIconPackage(){var icons={};definitions.forEach(function(d){var icon=byId[d[0]];icons[icon.id]=fullSvg(icon)});return {version:1,updatedAt:new Date().toISOString(),scope:"both",format:"alimentacao-interface-icon-overrides",description:"Conjunto completo de ícones internos do NutriTrack. Aplicar cada SVG como padrão em index.html, beta/base-index.html e nas definições deste editor.",iconCount:definitions.length,icons:icons}}
       function needChanges(){if(Object.keys(saved).some(function(id){return !!saved[id]}))return true;status.className="status error";status.textContent="Modifique pelo menos um ícone antes de exportar.";return false}
       function download(blob,name){var link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(link.href)},700)}
       document.getElementById("copy").addEventListener("click",function(){if(!needChanges())return;var text=JSON.stringify(packageData(),null,2);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){status.className="status";status.textContent="Configuração copiada."},function(){status.className="status error";status.textContent="Não foi possível copiar. Use Baixar JSON."});else{status.className="status error";status.textContent="Seu navegador não permite copiar aqui. Use Baixar JSON."}});
       document.getElementById("json").addEventListener("click",function(){if(needChanges())download(new Blob([JSON.stringify(packageData(),null,2)],{type:"application/json"}),"beta-icones-da-interface.json")});
+      document.getElementById("export-all").addEventListener("click",function(){download(new Blob([JSON.stringify(completeIconPackage(),null,2)],{type:"application/json"}),"icon-overrides.json");status.className="status";status.textContent="Arquivo completo exportado. Envie o icon-overrides.json aqui para transformar estes ícones nos novos padrões."});
 
       function crc32(bytes){var c=0xffffffff;for(var i=0;i<bytes.length;i++){c^=bytes[i];for(var j=0;j<8;j++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^0xffffffff)>>>0}
       function u16(a,p,n){a[p]=n&255;a[p+1]=(n>>>8)&255}function u32(a,p,n){a[p]=n&255;a[p+1]=(n>>>8)&255;a[p+2]=(n>>>16)&255;a[p+3]=(n>>>24)&255}
