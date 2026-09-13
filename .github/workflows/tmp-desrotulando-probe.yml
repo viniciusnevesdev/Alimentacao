@@ -18,28 +18,18 @@ jobs:
           req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
           with urllib.request.urlopen(req, timeout=180) as r, open("app.apk","wb") as f:
               while True:
-                  chunk=r.read(1024*1024)
-                  if not chunk: break
-                  f.write(chunk)
+                  b=r.read(1024*1024)
+                  if not b: break
+                  f.write(b)
           PY
           unzip -q app.apk -d apk
-      - name: Inspect app strings
+      - name: Inspect endpoint context without credentials
         run: |
           APP_SO=$(find apk -path "*/libapp.so" | head -n 1)
-          echo "APP_SO=$APP_SO"
-          echo "=== ENDPOINT-LIKE STRINGS ==="
-          strings -n 3 "$APP_SO" | grep -Ei 'api\.desrotulando|food.?score|barcode|gtin|ean|product|produto|search|busca|category|categoria|score|rating|nutrition|nutri' | head -n 2500 || true
-          echo "=== AUTH / HEADER STRINGS ==="
-          strings -n 3 "$APP_SO" | grep -Ei 'authorization|bearer|x-api|api.?key|token|jwt|firebase.?auth|id.?token|access.?token|refresh.?token|client.?id' | head -n 1000 || true
-          echo "=== PATH-LIKE STRINGS ==="
-          strings -n 3 "$APP_SO" | grep -E '^/[A-Za-z0-9._~!$&()*+,;=:@%/?#-]{2,}$' | grep -Ei 'product|produto|barcode|ean|gtin|search|score|category|categoria|nutrition|user|auth' | head -n 1500 || true
-      - name: Probe public API surface
-        run: |
-          base='https://api.desrotulando.com/prod'
-          for p in '' '/' '/swagger' '/swagger.json' '/openapi.json' '/docs' '/products' '/product' '/search' '/categories'; do
-            echo "=== GET $base$p ==="
-            code=$(curl -L -sS --max-time 15 -o /tmp/body -w '%{http_code}' "$base$p" || true)
-            echo "HTTP $code"
-            head -c 800 /tmp/body 2>/dev/null || true
-            echo
+          strings -n 3 "$APP_SO" > /tmp/strings.txt
+          for needle in "ScanService|findByBarcode" "SearchAPI" "SearchService" "product/list" "products/{productID}" "products/{code}/{action}" "product_score" "product_ean" "getProductListItems"; do
+            echo "===== CONTEXT: $needle ====="
+            grep -n -F -m 3 -B 35 -A 35 "$needle" /tmp/strings.txt || true
           done
+          echo "===== NON-SECRET HTTP PARAMETER NAMES ====="
+          grep -Ei '^(ean|barcode|code|product_id|productID|product_ean|query|searchText|search|page|limit|offset|action|product_score|score)$' /tmp/strings.txt | sort -u || true
