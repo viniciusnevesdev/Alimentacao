@@ -66,11 +66,11 @@
   <div class="grid">
     <a class="card app-card" href="./">
       <span class="icon official-icon"><img src="./icon-official-192.png?v=9" alt=""></span>
-      <span class="copy"><strong>Oficial <span class="tag stable">ESTÁVEL</span></strong><small>Uso diário.<br>Dados reais deste aparelho.</small></span>
+      <span class="copy"><strong>Oficial <span class="tag stable">ESTÁVEL</span></strong><small>Versão <span data-release-version="official">1.0.0</span><br>Uso diário · dados reais deste aparelho.</small></span>
     </a>
     <a class="card app-card beta" href="./beta/">
       <span class="icon beta-icon"><img src="./beta/icon-beta-192.png?v=21" alt=""></span>
-      <span class="copy"><strong>Beta <span class="tag beta">BETA</span></strong><small>Ambiente de testes.<br>Dados totalmente isolados.</small></span>
+      <span class="copy"><strong>Beta <span class="tag beta">BETA</span></strong><small>Versão <span data-release-version="beta">1.1.0-beta</span><br>Ambiente de testes · dados isolados.</small></span>
     </a>
   </div>
 
@@ -87,8 +87,11 @@
   </div>
 </main>
 
+<script src="./version.js?v=1"></script>
 <script>
   (() => {
+    const releases=window.NutriTrackVersions||{};
+    document.querySelectorAll('[data-release-version]').forEach(el=>{const value=releases[el.dataset.releaseVersion];if(value)el.textContent=value;});
     const root = document.documentElement;
     const choices = [...document.querySelectorAll("[data-theme-choice]")];
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
