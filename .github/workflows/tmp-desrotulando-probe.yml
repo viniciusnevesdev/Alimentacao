@@ -1,0 +1,44 @@
+name: Temporary Desrotulando Probe
+
+on:
+  push:
+    paths:
+      - ".github/workflows/tmp-desrotulando-probe.yml"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download APK
+        run: |
+          python - <<'PY'
+          import urllib.request
+          url = "https://d.apkpure.net/b/APK/com.desrotulando.app?versionCode=3092"
+          req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
+          with urllib.request.urlopen(req, timeout=120) as r, open("app.apk","wb") as f:
+              while True:
+                  chunk=r.read(1024*1024)
+                  if not chunk: break
+                  f.write(chunk)
+          print("downloaded")
+          PY
+          ls -lh app.apk
+      - name: Extract strings
+        run: |
+          mkdir apk
+          unzip -q app.apk -d apk
+          echo "=== URLS / DOMAINS ==="
+          find apk -type f \( -name "*.dex" -o -name "*.so" -o -name "*.json" -o -name "*.xml" -o -name "*.txt" \) -print0 |
+            xargs -0 -I{} sh -c 'strings "{}" 2>/dev/null' |
+            grep -Eio 'https?://[^"[:space:]<>]+' |
+            sed 's/[),;]$//' |
+            sort -u |
+            grep -Ei 'desrot|foodread|firebase|googleapis|amazonaws|execute-api|appsync|graphql|algolia|api\.' |
+            head -n 400 || true
+          echo "=== KEY STRINGS ==="
+          find apk -type f \( -name "*.dex" -o -name "*.so" -o -name "*.json" -o -name "*.xml" -o -name "*.txt" \) -print0 |
+            xargs -0 -I{} sh -c 'strings "{}" 2>/dev/null' |
+            grep -Ei 'food.?score|barcode|ean|gtin|graphql|product.*search|search.*product|firebase|firestore|api[_ -]?url|base[_ -]?url' |
+            sort -u |
+            head -n 800 || true
