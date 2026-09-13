@@ -1,0 +1,33 @@
+name: Temporary Desrotulando Link Probe
+
+on:
+  push:
+    paths:
+      - ".github/workflows/tmp-desrotulando-link-probe.yml"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe shared link and product id
+        run: |
+          set +e
+          link='https://deeplink.desrotulando.com/product/7haijN/NmE5MzNjZjRmOTBhMDAzOTI5MDhkZWUy'
+          id='6a933cf4f90a00392908dee2'
+          echo '=== SHARED LINK ==='
+          curl -sS -L -D /tmp/h -o /tmp/b --max-time 20 "$link"
+          cat /tmp/h
+          echo
+          head -c 4000 /tmp/b
+          echo
+          for u in \
+            "https://api.desrotulando.com/prod/products/$id" \
+            "https://api.desrotulando.com/prod/product/$id" \
+            "https://api.desrotulando.com/prod/product?id=$id"; do
+            echo "=== $u ==="
+            code=$(curl -sS -L -o /tmp/x -w '%{http_code}' --max-time 20 "$u")
+            echo "HTTP $code"
+            head -c 1500 /tmp/x
+            echo
+          done
