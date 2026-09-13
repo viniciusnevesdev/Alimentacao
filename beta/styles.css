@@ -4,8 +4,17 @@
 .desrotulando-btn{grid-column:1/-1}.field input[readonly]{background:#f4f7fb;color:#64748b}
 
 /* Data e horário: manter exatamente o mesmo footprint visual dos demais campos no iOS/Safari */
-#entryDialog .entry-meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-#entryDialog .entry-meta-grid>.field{width:100%;max-width:100%;min-width:0;overflow:visible}
+#entryDialog .entry-meta-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:10px;
+}
+#entryDialog .entry-meta-grid>.field{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow:visible;
+  row-gap:5px;
+}
 #entryDialog #entryDate,
 #entryDialog #entryTime{
   display:block;
@@ -13,6 +22,12 @@
   max-width:100%;
   min-width:0;
   box-sizing:border-box;
+  height:38px;
+  min-height:38px;
+  max-height:38px;
+  border:1px solid #dfe6ee;
+  background:#fff;
+  color:#172033;
   padding:10px 11px;
   font-size:12px;
   border-radius:11px;
