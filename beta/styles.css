@@ -2,3 +2,35 @@
 .online-food-tools{display:grid;gap:9px;padding:12px;border:1px solid #dfe6ee;border-radius:14px;background:#f8fafc}.online-food-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online-food-actions .btn{width:100%;justify-content:center}.food-actions{gap:10px;flex-wrap:wrap}
 
 .desrotulando-btn{grid-column:1/-1}.field input[readonly]{background:#f4f7fb;color:#64748b}
+
+/* Data e horário: manter exatamente o mesmo footprint visual dos demais campos no iOS/Safari */
+#entryDialog .entry-meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#entryDialog .entry-meta-grid>.field{width:100%;max-width:100%;min-width:0;overflow:hidden}
+#entryDialog #entryDate,
+#entryDialog #entryTime{
+  display:block;
+  inline-size:100%;
+  width:100%;
+  max-inline-size:100%;
+  max-width:100%;
+  min-inline-size:0;
+  min-width:0;
+  height:38px;
+  min-height:38px;
+  max-height:38px;
+  box-sizing:border-box;
+  padding:0 11px;
+  line-height:38px;
+  font-size:12px;
+  border-radius:11px;
+}
+#entryDialog #entryDate::-webkit-date-and-time-value,
+#entryDialog #entryTime::-webkit-date-and-time-value{
+  margin:0;
+  padding:0;
+  min-height:0;
+  line-height:38px;
+  text-align:left;
+}
+#entryDialog #entryDate::-webkit-datetime-edit,
+#entryDialog #entryTime::-webkit-datetime-edit{padding:0}
