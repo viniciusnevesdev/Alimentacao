@@ -115,10 +115,59 @@
   function openEdit(id){const e=entries.find(x=>x.id===id);if(!e)return;$('#entryForm').reset();$('#entryDialogTitle').textContent='Editar alimento';$('#entryId').value=e.id;$('#entryDate').value=e.date;$('#entryTime').value=e.time;$('#meal').value=e.meal;$('#food').value=e.food;$('#amount').value=e.amount||'';$('#calories').value=e.calories;$('#protein').value=e.protein||'';$('#carbs').value=e.carbs||'';$('#fat').value=e.fat||'';$('#notes').value=e.notes||'';const q=$(`input[name="quality"][value="${e.quality||3}"]`);if(q)q.checked=true;estimateSource=e.estimateSource||'';selectedFood=window.NutritionHelper?.findBest(e.food)||null;renderSuggestions(e.food);updatePreview();$('#entryDialog').showModal()}
   function removeEntry(id){if(!confirm('Excluir este alimento do diário?'))return;entries=entries.filter(e=>e.id!==id);persist();render();toast('Registro excluído')}
   function renderSuggestions(query){const box=$('#foodSuggestions'),matches=window.NutritionHelper?.search(query,7)||[];if(!query.trim()){box.innerHTML='<div class="notice">Digite o nome do alimento para ver sugestões da base local.</div>';return}if(!matches.length){box.innerHTML='<div class="notice">Não encontrei esse alimento na base. Você ainda pode preencher os dados manualmente.</div>';return}box.innerHTML=matches.map(f=>{const s=window.NutritionHelper.estimate(f,'');return `<button type="button" class="suggestion ${selectedFood?.id===f.id?'selected':''}" data-food-id="${f.id}"><span><b>${escapeHtml(f.name)}</b><small>${escapeHtml(f.standard)}</small></span><strong>${fmt(s.calories)} kcal</strong></button>`}).join('');$$('[data-food-id]').forEach(b=>b.onclick=()=>{const f=window.NutritionHelper.foods.find(x=>x.id===b.dataset.foodId);selectSuggestion(f)})}
-  function selectSuggestion(food){if(!food)return;selectedFood=food;$('#food').value=food.name;if(!$('#amount').value)$('#amount').value=food.standard;renderSuggestions(food.name);updatePreview()}
+  function selectSuggestion(food){
+    if(!food)return;
+    selectedFood=food;
+    $('#food').value=food.name;
+    if(!$('#amount').value)$('#amount').value=food.standard;
+    renderSuggestions(food.name);
+    updatePreview();
+    applySuggestion(true);
+  }
   function hidePreview(){$('#nutritionPreview').hidden=true}
-  function updatePreview(){if(!selectedFood)selectedFood=window.NutritionHelper?.findBest($('#food').value)||null;if(!selectedFood){hidePreview();return}const e=window.NutritionHelper.estimate(selectedFood,$('#amount').value);if(!e){hidePreview();return}$('#nutritionPreview').hidden=false;$('#previewName').textContent=selectedFood.name;$('#previewServing').textContent=e.usedDefault?`Usando porção padrão: ${selectedFood.standard}`:`Calculado para: ${$('#amount').value}`;$('#previewCalories').textContent=fmt(e.calories);$('#previewProtein').textContent=fmt(e.protein,1);$('#previewCarbs').textContent=fmt(e.carbs,1);$('#previewFat').textContent=fmt(e.fat,1)}
-  function applySuggestion(){if(!selectedFood)return;const e=window.NutritionHelper.estimate(selectedFood,$('#amount').value);if(!e)return;$('#calories').value=e.calories;$('#protein').value=e.protein;$('#carbs').value=e.carbs;$('#fat').value=e.fat;const q=$(`input[name="quality"][value="${e.quality}"]`);if(q)q.checked=true;estimateSource=selectedFood.id;toast('Sugestão nutricional aplicada')}
+  function updatePreview(){
+    if(!selectedFood){hidePreview();return}
+    const amountText=$('#amount').value.trim();
+    const e=window.NutritionHelper.estimate(selectedFood,amountText);
+    if(!e){hidePreview();return}
+    $('#nutritionPreview').hidden=false;
+    $('#previewName').textContent=selectedFood.name;
+    $('#previewServing').textContent=amountText&&e.usedDefault
+      ?'Quantidade não reconhecida — use g, ml, unidade, fatia ou outra medida sugerida.'
+      :e.usedDefault
+        ?`Usando porção padrão: ${selectedFood.standard}`
+        :`Calculado para: ${amountText}`;
+    $('#previewCalories').textContent=fmt(e.calories);
+    $('#previewProtein').textContent=fmt(e.protein,1);
+    $('#previewCarbs').textContent=fmt(e.carbs,1);
+    $('#previewFat').textContent=fmt(e.fat,1);
+  }
+  function applySuggestion(silent=false){
+    if(!selectedFood)return false;
+    const amountText=$('#amount').value.trim();
+    const e=window.NutritionHelper.estimate(selectedFood,amountText);
+    if(!e)return false;
+    if(amountText&&e.usedDefault){
+      if(estimateSource===selectedFood.id){
+        $('#calories').value='';
+        $('#protein').value='';
+        $('#carbs').value='';
+        $('#fat').value='';
+      }
+      estimateSource='';
+      if(!silent)toast('Quantidade não reconhecida — ajuste a medida ou preencha manualmente');
+      return false;
+    }
+    $('#calories').value=e.calories;
+    $('#protein').value=e.protein;
+    $('#carbs').value=e.carbs;
+    $('#fat').value=e.fat;
+    const q=$(`input[name="quality"][value="${e.quality}"]`);
+    if(q)q.checked=true;
+    estimateSource=selectedFood.id;
+    if(!silent)toast('Valores recalculados pela base local');
+    return true;
+  }
   function updateWater(delta){const d=currentDate();waterLogs[d]=Math.max(0,num(waterLogs[d])+delta);persist();renderDiary()}
 
   function openWatchEditor(){const w=watchFor();$('#watch-active-input').value=w.activeCalories||'';$('#watch-basal-input').value=w.basalCalories||'';$('#watch-exercise-input').value=w.exerciseMinutes||'';$('#watch-stand-input').value=w.standHours||'';$('#watch-steps-input').value=w.steps||'';$('#watch-distance-input').value=w.distanceKm||'';$('#watch-resting-input').value=w.restingHeartRate||'';$('#watch-current-input').value=w.currentHeartRate||'';$('#watch-sleep-input').value=w.sleepHours||'';$('#watchDialog').showModal()}
@@ -131,7 +180,11 @@
   $('#watchForm').addEventListener('submit',ev=>{ev.preventDefault();watchLogs[currentDate()]={activeCalories:num($('#watch-active-input').value),basalCalories:num($('#watch-basal-input').value),exerciseMinutes:num($('#watch-exercise-input').value),standHours:num($('#watch-stand-input').value),steps:num($('#watch-steps-input').value),distanceKm:num($('#watch-distance-input').value),restingHeartRate:num($('#watch-resting-input').value),currentHeartRate:num($('#watch-current-input').value),sleepHours:num($('#watch-sleep-input').value),updatedAt:new Date().toISOString()};persist();$('#watchDialog').close();render();toast('Dados de atividade salvos')});
   $('#measurementForm').addEventListener('submit',ev=>{ev.preventDefault();const date=$('#measurementDate').value;const existing=measurements.find(m=>m.date===date);const item={id:existing?.id||uid(),date,weight:num($('#measurementWeight').value),bodyFat:num($('#measurementFat').value),waist:num($('#measurementWaist').value)};measurements=measurements.filter(m=>m.id!==item.id&&m.date!==date);measurements.push(item);persist();$('#measurementDialog').close();render();toast('Medição salva')});
 
-  $('#food').addEventListener('input',()=>{selectedFood=window.NutritionHelper?.findBest($('#food').value)||null;estimateSource='';renderSuggestions($('#food').value);updatePreview()});$('#amount').addEventListener('input',updatePreview);$('#applySuggestion').onclick=applySuggestion;$('#catalogSearch').addEventListener('input',renderCatalog);
+  $('#food').addEventListener('input',()=>{selectedFood=null;estimateSource='';renderSuggestions($('#food').value);updatePreview()});
+  $('#amount').addEventListener('input',()=>{updatePreview();if(selectedFood)applySuggestion(true)});
+  $('#applySuggestion').onclick=()=>applySuggestion(false);
+  ['calories','protein','carbs','fat'].forEach(id=>$('#'+id).addEventListener('input',()=>{estimateSource=''}));
+  $('#catalogSearch').addEventListener('input',renderCatalog);
   $('#selectedDate').onchange=render;$('#prevDay').onclick=()=>shiftDay(-1);$('#nextDay').onclick=()=>shiftDay(1);function shiftDay(delta){const d=new Date(currentDate()+'T12:00:00');d.setDate(d.getDate()+delta);$('#selectedDate').value=d.toLocaleDateString('en-CA');render()}$('#goToday').onclick=()=>{$('#selectedDate').value=today();render()};$('#prettyDate').onclick=()=>{try{$('#selectedDate').showPicker()}catch{$('#selectedDate').click()}};
   $$('.tab').forEach(t=>t.onclick=()=>switchView(t.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>switchView(b.dataset.viewJump));
   $$('.period-pills button').forEach(b=>b.onclick=()=>{analyticsPeriod=num(b.dataset.period);$$('.period-pills button').forEach(x=>x.classList.toggle('active',x===b));renderAnalytics()});
