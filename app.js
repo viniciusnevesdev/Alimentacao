@@ -7,6 +7,7 @@
   const SNAPSHOT_KEY='alimentacao-snapshots-v1';
   const BACKUP_SCHEMA_VERSION=1;
   const APP_DATA_VERSION=4;
+  const RELEASE_VERSIONS=window.NutriTrackVersions||{official:'1.0.0',beta:'1.1.0-beta'};
   const defaults={calorieGoal:2000,proteinGoal:120,carbsGoal:250,fatGoal:65,waterGoal:2000,weightGoal:75,moveGoal:600,exerciseGoal:30,standGoal:12};
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const num=v=>Number(v||0), fmt=(v,d=0)=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:d}).format(v);
@@ -55,9 +56,12 @@
       snapshots:Array.isArray(data.snapshots)?data.snapshots:null
     };
   }
+  function currentChannel(){return document.documentElement.dataset.channel==='beta'?'beta':'official'}
+  function currentReleaseVersion(){return RELEASE_VERSIONS[currentChannel()]||'0.0.0'}
+  function renderReleaseVersion(){const el=$('#appVersion');if(el)el.textContent=`v${currentReleaseVersion()}`}
   function createBackupPayload(){
-    const sourceChannel=document.documentElement.dataset.channel==='beta'?'beta':'official';
-    return {app:'NutriTrack',version:APP_DATA_VERSION,backupSchemaVersion:BACKUP_SCHEMA_VERSION,sourceChannel,compatibleWith:['official','beta'],exportedAt:new Date().toISOString(),settings,entries,waterLogs,watchLogs,measurements,snapshots};
+    const sourceChannel=currentChannel();
+    return {app:'NutriTrack',version:APP_DATA_VERSION,releaseVersion:currentReleaseVersion(),backupSchemaVersion:BACKUP_SCHEMA_VERSION,sourceChannel,compatibleWith:['official','beta'],exportedAt:new Date().toISOString(),settings,entries,waterLogs,watchLogs,measurements,snapshots};
   }
   function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
   function currentDate(){return $('#selectedDate').value||today()}
@@ -141,5 +145,5 @@
   $('#exportBtn').onclick=()=>{const payload=createBackupPayload();const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);const prefix=payload.sourceChannel==='beta'?'nutritrack-beta-backup':'nutritrack-backup';a.download=prefix+'-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=async ev=>{const file=ev.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text()),backup=normalizeBackupPayload(data),newer=backup.schemaVersion>BACKUP_SCHEMA_VERSION;const warning=newer?'\n\nEste backup usa um formato mais novo. Serão importados os campos compatíveis; dados adicionais que esta versão ainda não conhece serão ignorados.':'';if(!confirm(`Importar ${backup.entries.length} registros e substituir os dados atuais?${warning}`))return;entries=backup.entries;settings={...defaults,...backup.settings};waterLogs=backup.waterLogs;watchLogs=backup.watchLogs;measurements=backup.measurements;snapshots=backup.snapshots??snapshots;persist();render();toast(newer?'Backup compatível restaurado':'Backup restaurado')}catch{alert('Não foi possível importar este arquivo.')}ev.target.value=''};
   $('#clearBtn').onclick=()=>{if(!confirm('Apagar registros, hidratação, atividade, medidas e ajustes deste aparelho?'))return;entries=[];waterLogs={};watchLogs={};measurements=[];snapshots=[];settings={...defaults};persist();render();toast('Dados apagados')};$$('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
 
-  $('#selectedDate').value=today();render();switchView('diary');if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  $('#selectedDate').value=today();renderReleaseVersion();render();switchView('diary');if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
