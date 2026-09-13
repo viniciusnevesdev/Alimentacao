@@ -110,7 +110,7 @@
     customFoods.forEach(food=>{const i=window.NutritionHelper.foods.findIndex(f=>f.id===food.id);if(i>=0)window.NutritionHelper.foods[i]=food;else window.NutritionHelper.foods.push(food)});
   }
   function openCustomFood(prefill=''){
-    $('#customFoodForm').reset();$('#customFoodForm').dataset.source='manual';$('#customFoodId').value='';$('#customFoodName').value=prefill||'';$('#customFoodRefQty').value=100;$('#customFoodUnit').value='g';$('#customFoodQuality').value=3;$('#customFoodScore').value='';$('#customFoodScoreSource').value='manual';$('#onlineFoodStatus').textContent='A busca nutricional usa Open Food Facts. A consulta ao Desrotulando é experimental e pode deixar de funcionar.';$('#customFoodDialog').showModal();setTimeout(()=>$('#customFoodName').focus(),80);
+    $('#customFoodForm').reset();$('#customFoodForm').dataset.source='manual';$('#customFoodForm').dataset.desrotulandoProductId='';$('#customFoodId').value='';$('#customFoodName').value=prefill||'';$('#customFoodRefQty').value=100;$('#customFoodUnit').value='g';$('#customFoodQuality').value=3;$('#customFoodScore').value='';$('#customFoodScoreSource').value='manual';$('#onlineFoodStatus').textContent='A busca nutricional usa Open Food Facts. A consulta ao Desrotulando é experimental e pode deixar de funcionar.';$('#customFoodDialog').showModal();setTimeout(()=>$('#customFoodName').focus(),80);
   }
   function openFoodProduct(product){
     const n=product?.nutriments||{},name=(product.product_name||'').trim(),brand=(product.brands||'').split(',')[0]?.trim();
@@ -165,6 +165,59 @@
     $('#customFoodQuality').value=qualityFromFoodScore(normalized);
     return true;
   }
+  function decodeDesrotulandoProductId(link){
+    try{
+      const url=new URL(link.trim());
+      if(url.hostname!=='deeplink.desrotulando.com')return null;
+      const parts=url.pathname.split('/').filter(Boolean);
+      const raw=parts[parts.length-1]||'';
+      if(/^[a-f0-9]{24}$/i.test(raw))return raw.toLowerCase();
+      const normalized=raw.replace(/-/g,'+').replace(/_/g,'/');
+      const padded=normalized+'='.repeat((4-normalized.length%4)%4);
+      const decoded=atob(padded).trim();
+      return /^[a-f0-9]{24}$/i.test(decoded)?decoded.toLowerCase():null;
+    }catch{return null}
+  }
+  async function lookupDesrotulandoByProductId(productId){
+    const base='https://api.desrotulando.com/prod';
+    const urls=[
+      base+'/products/'+encodeURIComponent(productId),
+      base+'/product/'+encodeURIComponent(productId),
+      base+'/product?id='+encodeURIComponent(productId)
+    ];
+    let blocked=false,lastStatus=0;
+    for(const url of urls){
+      try{
+        const r=await fetch(url,{method:'GET',cache:'no-store',mode:'cors',credentials:'omit',headers:{Accept:'application/json'}});
+        lastStatus=r.status;
+        if(r.status===401||r.status===403){blocked=true;break}
+        if(!r.ok)continue;
+        const data=await r.json();
+        const score=findFoodScore(data);
+        if(score){
+          applyFoodScore(score);
+          $('#customFoodForm').dataset.scoreSource='desrotulando';
+          $('#onlineFoodStatus').textContent='Produto identificado pelo link e FoodScore encontrado: '+$('#customFoodScore').value+'/100. Confira antes de salvar.';
+          return true;
+        }
+      }catch{}
+    }
+    $('#customFoodScoreSource').value='manual';
+    $('#onlineFoodStatus').textContent=blocked||lastStatus===403
+      ?'O link foi reconhecido e o produto foi identificado, mas o Desrotulando bloqueou a leitura dos dados sem autenticação. Você ainda pode informar o FoodScore manualmente.'
+      :'O link foi reconhecido, mas não consegui obter os dados desse produto agora.';
+    return false;
+  }
+  async function lookupDesrotulandoLink(){
+    const link=$('#customFoodDesrotulandoUrl').value.trim();
+    if(!link){toast('Cole o link compartilhado do Desrotulando');return}
+    const productId=decodeDesrotulandoProductId(link);
+    if(!productId){$('#onlineFoodStatus').textContent='Não reconheci um identificador de produto nesse link do Desrotulando.';return}
+    $('#customFoodForm').dataset.desrotulandoProductId=productId;
+    $('#onlineFoodStatus').textContent='Link reconhecido. Produto identificado; tentando obter o FoodScore...';
+    await lookupDesrotulandoByProductId(productId);
+  }
+
   async function lookupDesrotulando(){
     const code=$('#customFoodBarcode').value.replace(/\D/g,'');
     if(!code){toast('Digite o código de barras para consultar o Desrotulando');return}
@@ -286,7 +339,7 @@
 
   $('#entryForm').addEventListener('submit',ev=>{ev.preventDefault();const id=$('#entryId').value||uid(),entry={id,date:$('#entryDate').value,time:$('#entryTime').value,meal:$('#meal').value,food:$('#food').value.trim(),amount:$('#amount').value.trim(),calories:num($('#calories').value),quality:num($('input[name="quality"]:checked')?.value||3),protein:num($('#protein').value),carbs:num($('#carbs').value),fat:num($('#fat').value),notes:$('#notes').value.trim(),estimateSource,updatedAt:new Date().toISOString()};const i=entries.findIndex(e=>e.id===id);if(i>=0)entries[i]=entry;else entries.push(entry);persist();$('#selectedDate').value=entry.date;$('#entryDialog').close();switchView('diary');render();toast(i>=0?'Registro atualizado':'Alimento adicionado')});
   $('#watchForm').addEventListener('submit',ev=>{ev.preventDefault();watchLogs[currentDate()]={activeCalories:num($('#watch-active-input').value),basalCalories:num($('#watch-basal-input').value),exerciseMinutes:num($('#watch-exercise-input').value),standHours:num($('#watch-stand-input').value),steps:num($('#watch-steps-input').value),distanceKm:num($('#watch-distance-input').value),restingHeartRate:num($('#watch-resting-input').value),currentHeartRate:num($('#watch-current-input').value),sleepHours:num($('#watch-sleep-input').value),updatedAt:new Date().toISOString()};persist();$('#watchDialog').close();render();toast('Dados de atividade salvos')});
-  $('#customFoodForm').addEventListener('submit',ev=>{ev.preventDefault();const name=$('#customFoodName').value.trim(),refQty=Math.max(.1,num($('#customFoodRefQty').value)),unit=$('#customFoodUnit').value==='ml'?'ml':'g',factor=100/refQty,id=$('#customFoodId').value||'custom-'+uid();const foodScoreRaw=num($('#customFoodScore').value),food={id,name,aliases:[name],kcal:num($('#customFoodCalories').value)*factor,protein:num($('#customFoodProtein').value)*factor,carbs:num($('#customFoodCarbs').value)*factor,fat:num($('#customFoodFat').value)*factor,quality:num($('#customFoodQuality').value)||3,standard:refQty+' '+unit,baseUnit:unit,units:{},custom:true,barcode:$('#customFoodBarcode').value.replace(/\D/g,''),source:$('#customFoodForm').dataset.source||'manual',foodScore:foodScoreRaw>=1&&foodScoreRaw<=100?foodScoreRaw:null,scoreSource:foodScoreRaw>=1&&foodScoreRaw<=100?($('#customFoodScoreSource').value||'manual'):null};const same=customFoods.findIndex(f=>window.NutritionHelper.normalize(f.name)===window.NutritionHelper.normalize(name));if(same>=0){food.id=customFoods[same].id;customFoods[same]=food}else customFoods.push(food);syncCustomFoodsToHelper();persist();$('#customFoodDialog').close();render();if($('#entryDialog').open){selectedFood=food;selectSuggestion(food)}toast(same>=0?'Alimento personalizado atualizado':'Alimento adicionado ao banco')});
+  $('#customFoodForm').addEventListener('submit',ev=>{ev.preventDefault();const name=$('#customFoodName').value.trim(),refQty=Math.max(.1,num($('#customFoodRefQty').value)),unit=$('#customFoodUnit').value==='ml'?'ml':'g',factor=100/refQty,id=$('#customFoodId').value||'custom-'+uid();const foodScoreRaw=num($('#customFoodScore').value),food={id,name,aliases:[name],kcal:num($('#customFoodCalories').value)*factor,protein:num($('#customFoodProtein').value)*factor,carbs:num($('#customFoodCarbs').value)*factor,fat:num($('#customFoodFat').value)*factor,quality:num($('#customFoodQuality').value)||3,standard:refQty+' '+unit,baseUnit:unit,units:{},custom:true,barcode:$('#customFoodBarcode').value.replace(/\D/g,''),source:$('#customFoodForm').dataset.source||'manual',foodScore:foodScoreRaw>=1&&foodScoreRaw<=100?foodScoreRaw:null,scoreSource:foodScoreRaw>=1&&foodScoreRaw<=100?($('#customFoodScoreSource').value||'manual'):null,desrotulandoUrl:$('#customFoodDesrotulandoUrl').value.trim()||null,desrotulandoProductId:$('#customFoodForm').dataset.desrotulandoProductId||null};const same=customFoods.findIndex(f=>window.NutritionHelper.normalize(f.name)===window.NutritionHelper.normalize(name));if(same>=0){food.id=customFoods[same].id;customFoods[same]=food}else customFoods.push(food);syncCustomFoodsToHelper();persist();$('#customFoodDialog').close();render();if($('#entryDialog').open){selectedFood=food;selectSuggestion(food)}toast(same>=0?'Alimento personalizado atualizado':'Alimento adicionado ao banco')});
 
   $('#measurementForm').addEventListener('submit',ev=>{ev.preventDefault();const date=$('#measurementDate').value;const existing=measurements.find(m=>m.date===date);const item={id:existing?.id||uid(),date,weight:num($('#measurementWeight').value),bodyFat:num($('#measurementFat').value),waist:num($('#measurementWaist').value)};measurements=measurements.filter(m=>m.id!==item.id&&m.date!==date);measurements.push(item);persist();$('#measurementDialog').close();render();toast('Medição salva')});
 
@@ -299,7 +352,7 @@
   $$('.tab').forEach(t=>t.onclick=()=>switchView(t.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>switchView(b.dataset.viewJump));
   $$('.period-pills button').forEach(b=>b.onclick=()=>{analyticsPeriod=num(b.dataset.period);$$('.period-pills button').forEach(x=>x.classList.toggle('active',x===b));renderAnalytics()});
   $('#waterMinus').onclick=()=>updateWater(-250);$('#water250').onclick=()=>updateWater(250);$('#water500').onclick=()=>updateWater(500);$('#heroGoals').onclick=()=>switchView('backup');$('#editWatch').onclick=openWatchEditor;$('#newMeasurement').onclick=openMeasurement;$('#saveSnapshot').onclick=createSnapshot;
-  $('#scanPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#createFoodPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#lookupBarcode').onclick=lookupBarcode;$('#lookupFoodName').onclick=lookupFoodName;$('#lookupDesrotulando').onclick=lookupDesrotulando;$('#customFoodScore').addEventListener('input',()=>{const score=num($('#customFoodScore').value);$('#customFoodScoreSource').value='manual';if(score>=1&&score<=100)$('#customFoodQuality').value=qualityFromFoodScore(score)});
+  $('#scanPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#createFoodPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#lookupBarcode').onclick=lookupBarcode;$('#lookupFoodName').onclick=lookupFoodName;$('#lookupDesrotulandoLink').onclick=lookupDesrotulandoLink;$('#lookupDesrotulando').onclick=lookupDesrotulando;$('#customFoodScore').addEventListener('input',()=>{const score=num($('#customFoodScore').value);$('#customFoodScoreSource').value='manual';if(score>=1&&score<=100)$('#customFoodQuality').value=qualityFromFoodScore(score)});
   $('#saveGoals').onclick=()=>{settings={...settings,calorieGoal:num($('#setting-calorieGoal').value),proteinGoal:num($('#setting-proteinGoal').value),carbsGoal:num($('#setting-carbsGoal').value),fatGoal:num($('#setting-fatGoal').value),waterGoal:num($('#setting-waterGoal').value),weightGoal:num($('#setting-weightGoal').value)};persist();render();toast('Metas salvas')};
   $('#exportBtn').onclick=()=>{const payload=createBackupPayload();const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);const prefix=payload.sourceChannel==='beta'?'nutritrack-beta-backup':'nutritrack-backup';a.download=prefix+'-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=async ev=>{const file=ev.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text()),backup=normalizeBackupPayload(data),newer=backup.schemaVersion>BACKUP_SCHEMA_VERSION;const warning=newer?'\n\nEste backup usa um formato mais novo. Serão importados os campos compatíveis; dados adicionais que esta versão ainda não conhece serão ignorados.':'';if(!confirm(`Importar ${backup.entries.length} registros e substituir os dados atuais?${warning}`))return;entries=backup.entries;settings={...defaults,...backup.settings};waterLogs=backup.waterLogs;watchLogs=backup.watchLogs;measurements=backup.measurements;snapshots=backup.snapshots??snapshots;customFoods=backup.customFoods||[];syncCustomFoodsToHelper();persist();render();toast(newer?'Backup compatível restaurado':'Backup restaurado')}catch{alert('Não foi possível importar este arquivo.')}ev.target.value=''};
   $('#clearBtn').onclick=()=>{if(!confirm('Apagar registros, hidratação, atividade, medidas e ajustes deste aparelho?'))return;entries=[];waterLogs={};watchLogs={};measurements=[];snapshots=[];customFoods=[];settings={...defaults};syncCustomFoodsToHelper();persist();render();toast('Dados apagados')};$$('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
