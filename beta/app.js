@@ -22,8 +22,20 @@
   const badge=document.querySelector('.badge');
   if(badge) badge.textContent='PRO · BETA';
 
+  const topActions=document.querySelector('.top-actions');
+  if(topActions&&!document.getElementById('entryEditorShortcut')){
+    const editorLink=document.createElement('a');
+    editorLink.id='entryEditorShortcut';
+    editorLink.className='square-action';
+    editorLink.href='./editor.html';
+    editorLink.setAttribute('aria-label','Abrir editor da janela Adicionar alimento');
+    editorLink.title='Editor de Adicionar alimento';
+    editorLink.textContent='✎';
+    topActions.prepend(editorLink);
+  }
+
   const script=document.createElement('script');
-  script.src='./base-app.js?v=11';
+  script.src='./base-app.js?v=12';
   script.onload=()=>{};
   script.onerror=()=>alert('Não foi possível iniciar a versão Beta.');
   document.body.appendChild(script);
