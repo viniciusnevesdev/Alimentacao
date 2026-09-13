@@ -13,7 +13,10 @@
   const num=v=>Number(v||0), fmt=(v,d=0)=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:d}).format(v);
   const uid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const today=()=>new Date().toLocaleDateString('en-CA'), nowTime=()=>new Date().toTimeString().slice(0,5);
-  const icon=id=>`<svg><use href="#i-${id}"/></svg>`;
+  const FILLED_SYMBOLS=new Set(['i-utensils','i-chart','i-watch','i-scale','i-book','i-cloud','i-calendar','i-left','i-right','i-flame','i-heart','i-steps','i-timer','i-moon','i-plus','i-search','i-edit','i-trash','i-download','i-upload','i-database','i-history','i-coffee','i-apple','i-cookie','i-menu']);
+  const iconClass=id=>FILLED_SYMBOLS.has(`i-${id}`)?'svg-icon-filled':'svg-icon-stroke';
+  const icon=id=>`<svg class="${iconClass(id)}"><use href="#i-${id}"/></svg>`;
+  function normalizeIconRendering(root=document){root.querySelectorAll('svg use[href^="#i-"]').forEach(use=>{const svg=use.closest('svg');if(!svg)return;const ref=use.getAttribute('href')||use.getAttribute('xlink:href')||'';const filled=FILLED_SYMBOLS.has(ref.slice(1));svg.classList.toggle('svg-icon-filled',filled);svg.classList.toggle('svg-icon-stroke',!filled)})}
   const mealConfigs=[
     ['Café da manhã','coffee','Primeira refeição do dia','icon-amber'],
     ['Lanche da manhã','apple','Lanche entre as refeições','icon-rose'],
@@ -74,7 +77,7 @@
   function dayList(days,end=currentDate()){const base=new Date(end+'T12:00:00');return Array.from({length:days},(_,i)=>{const d=new Date(base);d.setDate(base.getDate()-(days-1-i));return d.toLocaleDateString('en-CA')})}
   function sumDay(date,key){return entries.filter(e=>e.date===date).reduce((s,e)=>s+num(e[key]),0)}
 
-  function render(){renderDate();renderDiary();renderCatalog();renderWatch();renderMeasurements();renderBackup();renderSettings();renderAnalytics()}
+  function render(){renderDate();renderDiary();renderCatalog();renderWatch();renderMeasurements();renderBackup();renderSettings();renderAnalytics();normalizeIconRendering()}
   function renderDate(){const d=currentDate();$('#prettyDate').textContent=prettyDate(d);$('#goToday').style.display=d===today()?'none':'inline-flex'}
 
   function renderDiary(){
