@@ -5,518 +5,80 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef2f6">
 <title>Editor — Adicionar alimento</title>
-<style>
-:root{
-  --ink:#172033;--muted:#65748a;--line:#dfe6ee;--green:#10a66f;--green2:#33c892;
-  --panel:#fff;--bg:#eef2f6;--danger:#d92d20;--blue:#2563eb;
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.topbar{
-  position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);
-  border-bottom:1px solid #dbe3ec;padding:10px max(12px,env(safe-area-inset-left));
-}
-.topbar-row{max-width:1180px;margin:auto;display:flex;align-items:center;gap:8px}
-.topbar h1{font-size:15px;margin:0;flex:1}.topbar small{display:block;color:#708098;font-size:10px;margin-top:2px}
-.tb-btn{border:1px solid #dbe3ec;background:#fff;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:750;color:#344054}
-.tb-btn.primary{background:#0f172a;color:#fff;border-color:#0f172a}.tb-btn.danger{color:var(--danger)}
-.workspace{max-width:1180px;margin:auto;padding:18px 14px 140px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
-.preview-shell{min-width:0}
-.preview-caption{font-size:10px;color:#738198;margin:0 0 8px 3px}
-.modal-preview{
-  width:min(620px,100%);margin:auto;background:#fff;border-radius:24px;box-shadow:0 26px 70px rgba(15,23,42,.18);
-  overflow:visible;border:1px solid #e3e8ef;
-}
-.modal-head{padding:17px 19px;border-bottom:1px solid #edf1f5;background:#fbfcfe;display:flex;justify-content:space-between;align-items:center;border-radius:24px 24px 0 0}
-.modal-head h2{font-size:16px;margin:0}.modal-head p{font-size:10px;color:#6c7a90;margin:3px 0 0}
-.close-btn{width:34px;height:34px;border:0;border-radius:10px;background:#f1f4f8;color:#627087;font-size:17px}
-.modal-body{padding:18px;display:grid;gap:12px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.field{display:grid;gap:5px;min-width:0}.field.full{grid-column:1/-1}
-.field label{font-size:10px;color:#65748a;font-weight:750}
-.fake-input,.field input,.field select,.field textarea{
-  width:100%;max-width:100%;min-width:0;border:1px solid #dfe6ee;background:#fff;color:#172033;border-radius:11px;
-  padding:10px 11px;font-size:12px;outline:none;
-}
-.field input,.field select,.fake-input{height:38px;min-height:38px}
-.field textarea{min-height:75px;resize:none}
-.help{font-size:10px;color:#758399;line-height:1.35}
-.quality-pills{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.quality-pill{text-align:center;border:1px solid #dfe6ee;border-radius:10px;padding:8px;font-size:10px;font-weight:800;background:#fff}
-.quality-pill.active{border-color:#49c596;background:#eafaf3;color:#087b56}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:4px}
-.action-btn{border:1px solid #dfe6ee;background:#fff;color:#344054;border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800}
-.action-btn.primary{background:#10a66f;border-color:#10a66f;color:#fff}
-.editable{position:relative;transition:outline-color .12s,box-shadow .12s}
-.editable:hover{outline:1px dashed rgba(37,99,235,.45);outline-offset:2px}
-.editable.selected{outline:2px solid #2563eb!important;outline-offset:3px;box-shadow:0 0 0 5px rgba(37,99,235,.08)}
-.editable.hidden-by-editor{display:none!important}
-.editable::after{content:attr(data-editor-label);position:absolute;display:none;z-index:5;top:-18px;left:0;background:#2563eb;color:white;border-radius:5px;padding:2px 5px;font-size:8px;font-weight:700;white-space:nowrap}
-.editable.selected::after{display:block}
-.inspector{
-  position:sticky;top:76px;background:#fff;border:1px solid #dbe3ec;border-radius:18px;box-shadow:0 14px 40px rgba(15,23,42,.10);overflow:hidden
-}
-.inspector-head{padding:13px 14px;border-bottom:1px solid #eef2f6;display:flex;align-items:center;gap:8px}
-.inspector-head div{flex:1}.inspector-head b{font-size:13px;display:block}.inspector-head small{font-size:9px;color:#758399}
-.inspector-body{padding:13px;display:grid;gap:12px;max-height:calc(100vh - 140px);overflow:auto}
-.control-group{border:1px solid #edf1f5;border-radius:13px;padding:10px;display:grid;gap:9px}
-.control-title{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#8090a6;font-weight:850}
-.control-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.control{display:grid;gap:4px}.control.full{grid-column:1/-1}
-.control label{font-size:9px;color:#66758b;font-weight:750}
-.control input,.control select{width:100%;height:34px;border:1px solid #dbe3ec;border-radius:9px;padding:0 9px;background:#fff;color:#172033;font-size:11px}
-.segment{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.segment button{height:33px;border:1px solid #dbe3ec;background:#fff;border-radius:8px;font-size:10px;font-weight:800;color:#516075}
-.segment button.active{background:#0f172a;color:#fff;border-color:#0f172a}
-.inspector-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.inspector-actions button{height:36px;border-radius:9px;border:1px solid #dbe3ec;background:#fff;font-size:10px;font-weight:800;color:#42526a}
-.inspector-actions .danger{color:var(--danger);border-color:#f3c7c4;background:#fff8f7}
-.status{font-size:9px;color:#718096;line-height:1.4;background:#f8fafc;border-radius:10px;padding:8px}
-.json-file{display:none}
-.flash{animation:flash .45s}@keyframes flash{50%{transform:scale(.985)}}
-@media(max-width:850px){
-  .workspace{grid-template-columns:1fr;padding-bottom:360px}
-  .inspector{
-    position:fixed;z-index:90;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));top:auto;border-radius:18px;
-    max-height:330px;
-  }
-  .inspector-body{max-height:260px}
-  .topbar-row{flex-wrap:wrap}.topbar h1{min-width:180px}.topbar small{display:none}
-}
-@media(max-width:520px){
-  .workspace{padding-left:8px;padding-right:8px;padding-top:10px}
-  .modal-preview{border-radius:18px}.modal-head{border-radius:18px 18px 0 0;padding:15px 14px}.modal-body{padding:14px;gap:11px}
-  .form-grid{gap:9px}.topbar{padding:8px}.tb-btn{padding:7px 8px;font-size:10px}
-}
-</style>
+<link rel="stylesheet" href="./editor.css?v=2">
 </head>
 <body>
-<header class="topbar">
-  <div class="topbar-row">
-    <div>
-      <h1>Editor · Adicionar alimento</h1>
-      <small>Toque em qualquer elemento da janela para editar.</small>
-    </div>
-    <a class="tb-btn" href="./">← Beta</a>
-    <button class="tb-btn" id="importBtn" type="button">Importar JSON</button>
-    <button class="tb-btn primary" id="exportBtn" type="button">Exportar JSON</button>
-    <input class="json-file" id="importFile" type="file" accept=".json,application/json">
+<header class="appbar">
+  <div class="appbar-row">
+    <div class="appbar-title"><strong>Editor · Adicionar alimento</strong><small>Toque em um elemento da prévia ou escolha-o na lista.</small></div>
+    <a class="top-btn" href="./">← Beta</a>
+    <button class="top-btn" id="importBtn" type="button">Importar</button>
+    <button class="top-btn primary" id="exportBtn" type="button">Exportar JSON</button>
+    <input class="hidden-file" id="importFile" type="file" accept="application/json,.json">
   </div>
 </header>
-
-<main class="workspace">
-  <section class="preview-shell">
-    <p class="preview-caption">Prévia interativa — alterações são salvas só neste editor até você exportar.</p>
-    <div class="modal-preview" id="previewRoot">
-      <div class="modal-head editable" data-editor-id="header" data-editor-label="Cabeçalho">
-        <div>
-          <h2 class="editable" data-editor-id="title" data-editor-label="Título">Adicionar alimento</h2>
-          <p class="editable" data-editor-id="subtitle" data-editor-label="Subtítulo">Busque na base ou preencha manualmente</p>
+<main class="page">
+  <section class="preview-zone">
+    <p class="preview-help">Modo edição: os controles abaixo são apenas uma prévia; tocar neles seleciona o elemento em vez de preencher o formulário.</p>
+    <div class="preview" id="previewRoot" data-editor-id="window" data-editor-name="Janela inteira" data-editor-container="true">
+      <div class="modal-head" data-editor-id="header" data-editor-name="Cabeçalho" data-editor-movable="false">
+        <div data-editor-id="headingGroup" data-editor-name="Grupo de título">
+          <h2 data-editor-id="title" data-editor-name="Título">Adicionar alimento</h2>
+          <p data-editor-id="subtitle" data-editor-name="Subtítulo">Busque na base ou preencha manualmente</p>
         </div>
-        <button class="close-btn editable" data-editor-id="closeButton" data-editor-label="Fechar" type="button">✕</button>
+        <button class="close-btn" data-editor-id="closeButton" data-editor-name="Botão fechar" type="button">✕</button>
       </div>
-
-      <div class="modal-body editable" data-editor-id="body" data-editor-label="Corpo da janela">
-        <div class="form-grid editable" data-editor-id="mealFoodGrid" data-editor-label="Grupo refeição/alimento">
-          <div class="field full editable" data-editor-id="mealField" data-editor-label="Campo Refeição">
-            <label class="editable" data-editor-id="mealLabel" data-editor-label="Label Refeição">Refeição</label>
-            <select class="editable" data-editor-id="mealControl" data-editor-label="Controle Refeição"><option>Ceia</option></select>
+      <div class="modal-body" data-editor-id="body" data-editor-name="Corpo da janela" data-editor-container="true">
+        <div class="form-grid" data-editor-id="mealFoodGrid" data-editor-name="Grupo Refeição + Alimento" data-editor-movable="true" data-editor-container="true">
+          <div class="field full" data-editor-id="mealField" data-editor-name="Campo Refeição" data-editor-movable="true" data-editor-container="true">
+            <label data-editor-id="mealLabel" data-editor-name="Texto Refeição">Refeição</label>
+            <select data-editor-id="mealControl" data-editor-name="Caixa Refeição"><option>Ceia</option></select>
           </div>
-          <div class="field full editable" data-editor-id="foodField" data-editor-label="Campo Alimento">
-            <label class="editable" data-editor-id="foodLabel" data-editor-label="Label Alimento">Alimento / preparação</label>
-            <input class="editable" data-editor-id="foodControl" data-editor-label="Input Alimento" type="text" placeholder="Ex.: arroz, frango grelhado, banana">
-          </div>
-        </div>
-
-        <div class="help editable" data-editor-id="foodHelp" data-editor-label="Ajuda do alimento">Digite o nome do alimento para ver sugestões da base local.</div>
-
-        <div class="field editable" data-editor-id="amountField" data-editor-label="Campo Quantidade">
-          <label class="editable" data-editor-id="amountLabel" data-editor-label="Label Quantidade">Quantidade</label>
-          <input class="editable" data-editor-id="amountControl" data-editor-label="Input Quantidade" type="text" placeholder="Ex.: 120 g, 2 unidades, 1 fatia">
-        </div>
-
-        <div class="form-grid editable" data-editor-id="macrosGrid" data-editor-label="Grade de macronutrientes">
-          <div class="field editable" data-editor-id="caloriesField" data-editor-label="Campo Calorias">
-            <label class="editable" data-editor-id="caloriesLabel" data-editor-label="Label Calorias">Calorias (kcal)</label>
-            <input class="editable" data-editor-id="caloriesControl" data-editor-label="Input Calorias" type="text">
-          </div>
-          <div class="field editable" data-editor-id="proteinField" data-editor-label="Campo Proteína">
-            <label class="editable" data-editor-id="proteinLabel" data-editor-label="Label Proteína">Proteína (g)</label>
-            <input class="editable" data-editor-id="proteinControl" data-editor-label="Input Proteína" type="text">
-          </div>
-          <div class="field editable" data-editor-id="carbsField" data-editor-label="Campo Carboidratos">
-            <label class="editable" data-editor-id="carbsLabel" data-editor-label="Label Carboidratos">Carboidratos (g)</label>
-            <input class="editable" data-editor-id="carbsControl" data-editor-label="Input Carboidratos" type="text">
-          </div>
-          <div class="field editable" data-editor-id="fatField" data-editor-label="Campo Gorduras">
-            <label class="editable" data-editor-id="fatLabel" data-editor-label="Label Gorduras">Gorduras (g)</label>
-            <input class="editable" data-editor-id="fatControl" data-editor-label="Input Gorduras" type="text">
+          <div class="field full" data-editor-id="foodField" data-editor-name="Campo Alimento" data-editor-movable="true" data-editor-container="true">
+            <label data-editor-id="foodLabel" data-editor-name="Texto Alimento">Alimento / preparação</label>
+            <input data-editor-id="foodControl" data-editor-name="Caixa Alimento" type="text" placeholder="Ex.: arroz, frango grelhado, banana">
           </div>
         </div>
-
-        <div class="field editable" data-editor-id="qualityField" data-editor-label="Campo Qualidade">
-          <label class="editable" data-editor-id="qualityLabel" data-editor-label="Label Qualidade">Qualidade nutricional</label>
-          <div class="quality-pills editable" data-editor-id="qualityPills" data-editor-label="Notas de qualidade">
-            <div class="quality-pill editable" data-editor-id="quality1" data-editor-label="Nota 1">1</div>
-            <div class="quality-pill editable" data-editor-id="quality2" data-editor-label="Nota 2">2</div>
-            <div class="quality-pill editable active" data-editor-id="quality3" data-editor-label="Nota 3">3</div>
-            <div class="quality-pill editable" data-editor-id="quality4" data-editor-label="Nota 4">4</div>
-            <div class="quality-pill editable" data-editor-id="quality5" data-editor-label="Nota 5">5</div>
+        <div class="help" data-editor-id="foodHelp" data-editor-name="Texto de ajuda" data-editor-movable="true">Digite o nome do alimento para ver sugestões da base local.</div>
+        <div class="field" data-editor-id="amountField" data-editor-name="Campo Quantidade" data-editor-movable="true" data-editor-container="true">
+          <label data-editor-id="amountLabel" data-editor-name="Texto Quantidade">Quantidade</label>
+          <input data-editor-id="amountControl" data-editor-name="Caixa Quantidade" type="text" placeholder="Ex.: 120 g, 2 unidades, 1 fatia">
+        </div>
+        <div class="form-grid" data-editor-id="macrosGrid" data-editor-name="Grupo Macronutrientes" data-editor-movable="true" data-editor-container="true">
+          <div class="field" data-editor-id="caloriesField" data-editor-name="Campo Calorias" data-editor-movable="true" data-editor-container="true"><label data-editor-id="caloriesLabel" data-editor-name="Texto Calorias">Calorias (kcal)</label><input data-editor-id="caloriesControl" data-editor-name="Caixa Calorias" type="text"></div>
+          <div class="field" data-editor-id="proteinField" data-editor-name="Campo Proteína" data-editor-movable="true" data-editor-container="true"><label data-editor-id="proteinLabel" data-editor-name="Texto Proteína">Proteína (g)</label><input data-editor-id="proteinControl" data-editor-name="Caixa Proteína" type="text"></div>
+          <div class="field" data-editor-id="carbsField" data-editor-name="Campo Carboidratos" data-editor-movable="true" data-editor-container="true"><label data-editor-id="carbsLabel" data-editor-name="Texto Carboidratos">Carboidratos (g)</label><input data-editor-id="carbsControl" data-editor-name="Caixa Carboidratos" type="text"></div>
+          <div class="field" data-editor-id="fatField" data-editor-name="Campo Gorduras" data-editor-movable="true" data-editor-container="true"><label data-editor-id="fatLabel" data-editor-name="Texto Gorduras">Gorduras (g)</label><input data-editor-id="fatControl" data-editor-name="Caixa Gorduras" type="text"></div>
+        </div>
+        <div class="field" data-editor-id="qualityField" data-editor-name="Campo Qualidade" data-editor-movable="true" data-editor-container="true">
+          <label data-editor-id="qualityLabel" data-editor-name="Texto Qualidade">Qualidade nutricional</label>
+          <div class="quality-pills" data-editor-id="qualityPills" data-editor-name="Notas de qualidade" data-editor-container="true">
+            <div class="quality-pill" data-editor-id="quality1" data-editor-name="Nota 1">1</div><div class="quality-pill" data-editor-id="quality2" data-editor-name="Nota 2">2</div><div class="quality-pill active" data-editor-id="quality3" data-editor-name="Nota 3">3</div><div class="quality-pill" data-editor-id="quality4" data-editor-name="Nota 4">4</div><div class="quality-pill" data-editor-id="quality5" data-editor-name="Nota 5">5</div>
           </div>
         </div>
-
-        <div class="field editable" data-editor-id="notesField" data-editor-label="Campo Observações">
-          <label class="editable" data-editor-id="notesLabel" data-editor-label="Label Observações">Observações</label>
-          <textarea class="editable" data-editor-id="notesControl" data-editor-label="Textarea Observações" placeholder="Fome, saciedade, marca, preparo, contexto..."></textarea>
+        <div class="field" data-editor-id="notesField" data-editor-name="Campo Observações" data-editor-movable="true" data-editor-container="true">
+          <label data-editor-id="notesLabel" data-editor-name="Texto Observações">Observações</label><textarea data-editor-id="notesControl" data-editor-name="Caixa Observações" placeholder="Fome, saciedade, marca, preparo, contexto..."></textarea>
         </div>
-
-        <div class="form-grid editable" data-editor-id="dateTimeGrid" data-editor-label="Grupo Data/Horário">
-          <div class="field editable" data-editor-id="dateField" data-editor-label="Campo Data">
-            <label class="editable" data-editor-id="dateLabel" data-editor-label="Label Data">Data</label>
-            <div class="fake-input editable" data-editor-id="dateControl" data-editor-label="Input Data">13 de set. de 2026</div>
-          </div>
-          <div class="field editable" data-editor-id="timeField" data-editor-label="Campo Horário">
-            <label class="editable" data-editor-id="timeLabel" data-editor-label="Label Horário">Horário</label>
-            <div class="fake-input editable" data-editor-id="timeControl" data-editor-label="Input Horário">09:22</div>
-          </div>
+        <div class="form-grid" data-editor-id="dateTimeGrid" data-editor-name="Grupo Data + Horário" data-editor-movable="true" data-editor-container="true">
+          <div class="field" data-editor-id="dateField" data-editor-name="Campo Data" data-editor-movable="true" data-editor-container="true"><label data-editor-id="dateLabel" data-editor-name="Texto Data">Data</label><div class="fake-input" data-editor-id="dateControl" data-editor-name="Caixa Data">13 de set. de 2026</div></div>
+          <div class="field" data-editor-id="timeField" data-editor-name="Campo Horário" data-editor-movable="true" data-editor-container="true"><label data-editor-id="timeLabel" data-editor-name="Texto Horário">Horário</label><div class="fake-input" data-editor-id="timeControl" data-editor-name="Caixa Horário">09:22</div></div>
         </div>
-
-        <div class="modal-actions editable" data-editor-id="actions" data-editor-label="Ações">
-          <button class="action-btn editable" data-editor-id="cancelButton" data-editor-label="Cancelar" type="button">Cancelar</button>
-          <button class="action-btn primary editable" data-editor-id="saveButton" data-editor-label="Salvar" type="button">Salvar registro</button>
-        </div>
+        <div class="modal-actions" data-editor-id="actions" data-editor-name="Botões de ação" data-editor-movable="true" data-editor-container="true"><button class="action-btn" data-editor-id="cancelButton" data-editor-name="Botão Cancelar" type="button">Cancelar</button><button class="action-btn primary" data-editor-id="saveButton" data-editor-name="Botão Salvar" type="button">Salvar registro</button></div>
       </div>
     </div>
   </section>
-
-  <aside class="inspector" id="inspector">
-    <div class="inspector-head">
-      <div><b id="selectedName">Nenhum elemento selecionado</b><small id="selectedId">Toque em um item da prévia</small></div>
-      <button class="tb-btn" id="resetSelected" type="button">Restaurar</button>
-    </div>
+  <aside class="inspector">
+    <div class="inspector-head"><strong id="selectedName">Selecione um elemento</strong><small id="selectedId">Nenhum elemento selecionado</small></div>
     <div class="inspector-body">
-      <div class="status" id="hint">Selecione um elemento. Você poderá alterar tamanho, alinhamento, espaçamento, largura, raio, visibilidade e outros parâmetros.</div>
-
-      <div class="control-group">
-        <div class="control-title">Alinhamento e posição</div>
-        <div class="control full">
-          <label>Alinhamento do conteúdo</label>
-          <div class="segment" id="alignSegment">
-            <button type="button" data-align="left">Esquerda</button>
-            <button type="button" data-align="center">Centro</button>
-            <button type="button" data-align="right">Direita</button>
-          </div>
-        </div>
-        <div class="control full">
-          <label>Posição horizontal do elemento</label>
-          <div class="segment" id="positionSegment">
-            <button type="button" data-position="left">Esquerda</button>
-            <button type="button" data-position="center">Centro</button>
-            <button type="button" data-position="right">Direita</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-title">Tamanho</div>
-        <div class="control-row">
-          <div class="control"><label>Largura (%)</label><input id="widthInput" type="number" min="10" max="100" step="1"></div>
-          <div class="control"><label>Altura (px, 0 = auto)</label><input id="heightInput" type="number" min="0" max="400" step="1"></div>
-          <div class="control"><label>Fonte (px)</label><input id="fontSizeInput" type="number" min="6" max="72" step="1"></div>
-          <div class="control"><label>Peso</label><input id="fontWeightInput" type="number" min="100" max="900" step="50"></div>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-title">Espaçamento e forma</div>
-        <div class="control-row">
-          <div class="control"><label>Padding X</label><input id="paddingXInput" type="number" min="0" max="80" step="1"></div>
-          <div class="control"><label>Padding Y</label><input id="paddingYInput" type="number" min="0" max="80" step="1"></div>
-          <div class="control"><label>Margem acima</label><input id="marginTopInput" type="number" min="-50" max="100" step="1"></div>
-          <div class="control"><label>Margem abaixo</label><input id="marginBottomInput" type="number" min="-50" max="100" step="1"></div>
-          <div class="control"><label>Raio (px)</label><input id="radiusInput" type="number" min="0" max="80" step="1"></div>
-          <div class="control"><label>Gap (px)</label><input id="gapInput" type="number" min="0" max="80" step="1"></div>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-title">Ações do elemento</div>
-        <div class="inspector-actions">
-          <button id="moveUpBtn" type="button">Mover ↑</button>
-          <button id="moveDownBtn" type="button">Mover ↓</button>
-          <button id="duplicateBtn" type="button">Duplicar</button>
-          <button class="danger" id="deleteBtn" type="button">Excluir / ocultar</button>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-title">Editor</div>
-        <div class="inspector-actions">
-          <button id="undoBtn" type="button">Desfazer</button>
-          <button id="copyBtn" type="button">Copiar JSON</button>
-          <button class="danger" id="resetAllBtn" type="button">Restaurar tudo</button>
-        </div>
-      </div>
+      <div class="group"><div class="group-title">Elemento</div><select class="picker" id="elementPicker"></select><div class="metrics" id="metrics">Toque na prévia ou escolha um item.</div></div>
+      <div class="group"><div class="group-title">Alinhamento</div><div class="control"><label>Texto/conteúdo</label><div class="seg" id="alignSeg"><button type="button" data-value="left">Esquerda</button><button type="button" data-value="center">Centro</button><button type="button" data-value="right">Direita</button></div></div><div class="control"><label>Posição do elemento</label><div class="seg" id="positionSeg"><button type="button" data-value="left">Esquerda</button><button type="button" data-value="center">Centro</button><button type="button" data-value="right">Direita</button></div></div></div>
+      <div class="group"><div class="group-title">Tamanho</div><div class="row2"><div class="control"><label>Largura (%)</label><input id="widthInput" type="number" min="10" max="100" step="1"></div><div class="control"><label>Altura (px; vazio = auto)</label><input id="heightInput" type="number" min="0" max="400" step="1"></div><div class="control"><label>Fonte (px)</label><input id="fontSizeInput" type="number" min="6" max="72" step="1"></div><div class="control"><label>Peso</label><input id="fontWeightInput" type="number" min="100" max="900" step="50"></div></div></div>
+      <div class="group"><div class="group-title">Espaçamento</div><div class="row2"><div class="control"><label>Padding X</label><input id="paddingXInput" type="number" min="0" max="80"></div><div class="control"><label>Padding Y</label><input id="paddingYInput" type="number" min="0" max="80"></div><div class="control"><label>Margem acima</label><input id="marginTopInput" type="number" min="-50" max="100"></div><div class="control"><label>Margem abaixo</label><input id="marginBottomInput" type="number" min="-50" max="100"></div><div class="control"><label>Raio</label><input id="radiusInput" type="number" min="0" max="80"></div><div class="control"><label>Gap</label><input id="gapInput" type="number" min="0" max="80"></div></div></div>
+      <div class="group"><div class="group-title">Ações</div><div class="btn-grid"><button id="moveUpBtn" type="button">Mover ↑</button><button id="moveDownBtn" type="button">Mover ↓</button><button id="toggleHiddenBtn" class="danger" type="button">Excluir / ocultar</button><button id="resetSelectedBtn" type="button">Restaurar elemento</button></div></div>
+      <div class="group"><div class="group-title">Editor</div><div class="btn-grid"><button id="copyBtn" type="button">Copiar JSON</button><button id="resetAllBtn" class="danger" type="button">Restaurar tudo</button></div></div>
     </div>
   </aside>
 </main>
-
-<script>
-(()=>{
-  const STORAGE_KEY='nutritrack-beta-entry-editor-v1';
-  const $=s=>document.querySelector(s);
-  const $$=s=>[...document.querySelectorAll(s)];
-  const elements=()=>$$('.editable[data-editor-id]');
-  let selected=null;
-  let config={schemaVersion:1,editor:'adicionar-alimento',elements:{}};
-  let history=[];
-
-  function px(v){const n=parseFloat(v);return Number.isFinite(n)?Math.round(n):0}
-  function pushHistory(){
-    history.push(JSON.stringify(config));
-    if(history.length>30)history.shift();
-  }
-  function save(){
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(config));
-  }
-  function load(){
-    try{
-      const raw=localStorage.getItem(STORAGE_KEY);
-      if(raw){
-        const parsed=JSON.parse(raw);
-        if(parsed&&parsed.elements)config=parsed;
-      }
-    }catch{}
-  }
-  function setStyle(el,key,value){
-    if(value===null||value===undefined||value==='')el.style.removeProperty(key);
-    else el.style.setProperty(key,value);
-  }
-  function applyElement(id){
-    const el=document.querySelector('[data-editor-id="'+CSS.escape(id)+'"]');
-    if(!el)return;
-    const o=config.elements[id]||{};
-    el.classList.toggle('hidden-by-editor',!!o.hidden);
-    setStyle(el,'width',o.width?o.width+'%':null);
-    setStyle(el,'height',o.height&&o.height>0?o.height+'px':null);
-    setStyle(el,'min-height',o.height&&o.height>0?o.height+'px':null);
-    setStyle(el,'max-height',o.height&&o.height>0?o.height+'px':null);
-    setStyle(el,'font-size',o.fontSize?o.fontSize+'px':null);
-    setStyle(el,'font-weight',o.fontWeight?String(o.fontWeight):null);
-    setStyle(el,'text-align',o.textAlign||null);
-    setStyle(el,'padding-left',Number.isFinite(o.paddingX)?o.paddingX+'px':null);
-    setStyle(el,'padding-right',Number.isFinite(o.paddingX)?o.paddingX+'px':null);
-    setStyle(el,'padding-top',Number.isFinite(o.paddingY)?o.paddingY+'px':null);
-    setStyle(el,'padding-bottom',Number.isFinite(o.paddingY)?o.paddingY+'px':null);
-    setStyle(el,'margin-top',Number.isFinite(o.marginTop)?o.marginTop+'px':null);
-    setStyle(el,'margin-bottom',Number.isFinite(o.marginBottom)?o.marginBottom+'px':null);
-    setStyle(el,'border-radius',Number.isFinite(o.radius)?o.radius+'px':null);
-    setStyle(el,'gap',Number.isFinite(o.gap)?o.gap+'px':null);
-    if(o.position==='center'){el.style.marginLeft='auto';el.style.marginRight='auto'}
-    else if(o.position==='right'){el.style.marginLeft='auto';el.style.marginRight='0'}
-    else if(o.position==='left'){el.style.marginLeft='0';el.style.marginRight='auto'}
-    else{el.style.removeProperty('margin-left');el.style.removeProperty('margin-right')}
-  }
-  function applyAll(){
-    elements().forEach(el=>applyElement(el.dataset.editorId));
-  }
-  function getOverride(id){
-    return config.elements[id]||(config.elements[id]={});
-  }
-  function select(el){
-    if(!el)return;
-    elements().forEach(x=>x.classList.remove('selected'));
-    selected=el;
-    selected.classList.add('selected');
-    $('#selectedName').textContent=selected.dataset.editorLabel||selected.dataset.editorId;
-    $('#selectedId').textContent=selected.dataset.editorId;
-    $('#hint').textContent='Editando "'+(selected.dataset.editorLabel||selected.dataset.editorId)+'". As alterações são aplicadas imediatamente na prévia.';
-    syncInspector();
-  }
-  function computed(){
-    return selected?getComputedStyle(selected):null;
-  }
-  function readNum(id,fallback){
-    const o=config.elements[selected.dataset.editorId]||{};
-    return Number.isFinite(o[id])?o[id]:fallback;
-  }
-  function syncInspector(){
-    if(!selected)return;
-    const cs=computed(),o=config.elements[selected.dataset.editorId]||{};
-    const parentWidth=selected.parentElement?.getBoundingClientRect().width||selected.getBoundingClientRect().width||1;
-    const widthPct=Math.round((selected.getBoundingClientRect().width/parentWidth)*100);
-    $('#widthInput').value=o.width??Math.max(1,Math.min(100,widthPct));
-    $('#heightInput').value=o.height??0;
-    $('#fontSizeInput').value=o.fontSize??px(cs.fontSize);
-    $('#fontWeightInput').value=o.fontWeight??parseInt(cs.fontWeight)||400;
-    $('#paddingXInput').value=o.paddingX??px(cs.paddingLeft);
-    $('#paddingYInput').value=o.paddingY??px(cs.paddingTop);
-    $('#marginTopInput').value=o.marginTop??px(cs.marginTop);
-    $('#marginBottomInput').value=o.marginBottom??px(cs.marginBottom);
-    $('#radiusInput').value=o.radius??px(cs.borderRadius);
-    $('#gapInput').value=o.gap??px(cs.gap);
-    const align=o.textAlign||cs.textAlign||'left';
-    $$('#alignSegment button').forEach(b=>b.classList.toggle('active',b.dataset.align===align));
-    const pos=o.position||'left';
-    $$('#positionSegment button').forEach(b=>b.classList.toggle('active',b.dataset.position===pos));
-    $('#deleteBtn').textContent=o.hidden?'Restaurar elemento':'Excluir / ocultar';
-  }
-  function mutate(fn){
-    if(!selected)return;
-    pushHistory();
-    const o=getOverride(selected.dataset.editorId);
-    fn(o);
-    applyElement(selected.dataset.editorId);
-    save();
-    syncInspector();
-  }
-
-  elements().forEach(el=>{
-    el.addEventListener('click',e=>{
-      e.preventDefault();e.stopPropagation();
-      select(el);
-    });
-    if(/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(el.tagName)){
-      el.addEventListener('mousedown',e=>e.preventDefault());
-      el.addEventListener('touchstart',()=>{}, {passive:true});
-    }
-  });
-
-  const numericBindings={
-    widthInput:['width',v=>Math.max(10,Math.min(100,v))],
-    heightInput:['height',v=>Math.max(0,v)],
-    fontSizeInput:['fontSize',v=>Math.max(6,v)],
-    fontWeightInput:['fontWeight',v=>Math.max(100,Math.min(900,v))],
-    paddingXInput:['paddingX',v=>Math.max(0,v)],
-    paddingYInput:['paddingY',v=>Math.max(0,v)],
-    marginTopInput:['marginTop',v=>v],
-    marginBottomInput:['marginBottom',v=>v],
-    radiusInput:['radius',v=>Math.max(0,v)],
-    gapInput:['gap',v=>Math.max(0,v)]
-  };
-  Object.entries(numericBindings).forEach(([inputId,[prop,clamp]])=>{
-    $('#'+inputId).addEventListener('input',e=>{
-      const v=Number(e.target.value);
-      if(!Number.isFinite(v)||!selected)return;
-      mutate(o=>o[prop]=clamp(v));
-    });
-  });
-
-  $$('#alignSegment button').forEach(b=>b.onclick=()=>mutate(o=>o.textAlign=b.dataset.align));
-  $$('#positionSegment button').forEach(b=>b.onclick=()=>mutate(o=>o.position=b.dataset.position));
-
-  function move(dir){
-    if(!selected)return;
-    const parent=selected.parentElement;
-    if(!parent)return;
-    const siblings=[...parent.children].filter(x=>x.classList?.contains('editable'));
-    const i=siblings.indexOf(selected);
-    const target=siblings[i+dir];
-    if(!target)return;
-    pushHistory();
-    if(dir<0)parent.insertBefore(selected,target);
-    else parent.insertBefore(target,selected);
-    save();
-    selected.scrollIntoView({block:'nearest',behavior:'smooth'});
-  }
-  $('#moveUpBtn').onclick=()=>move(-1);
-  $('#moveDownBtn').onclick=()=>move(1);
-
-  $('#duplicateBtn').onclick=()=>{
-    if(!selected)return;
-    pushHistory();
-    const clone=selected.cloneNode(true);
-    const base=selected.dataset.editorId+'-copy';
-    let id=base,n=2;
-    while(document.querySelector('[data-editor-id="'+CSS.escape(id)+'"]'))id=base+'-'+n++;
-    clone.dataset.editorId=id;
-    clone.dataset.editorLabel=(selected.dataset.editorLabel||selected.dataset.editorId)+' (cópia)';
-    clone.classList.remove('selected');
-    selected.after(clone);
-    clone.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();select(clone)});
-    save();
-    select(clone);
-  };
-
-  $('#deleteBtn').onclick=()=>{
-    if(!selected)return;
-    const id=selected.dataset.editorId,o=getOverride(id);
-    if(o.hidden){
-      pushHistory();o.hidden=false;applyElement(id);save();select(selected);
-    }else{
-      pushHistory();o.hidden=true;applyElement(id);save();
-      selected.classList.remove('selected');
-      $('#selectedName').textContent='Elemento ocultado';
-      $('#selectedId').textContent=id;
-      $('#deleteBtn').textContent='Restaurar elemento';
-    }
-  };
-
-  $('#resetSelected').onclick=()=>{
-    if(!selected)return;
-    pushHistory();
-    delete config.elements[selected.dataset.editorId];
-    selected.removeAttribute('style');
-    selected.classList.remove('hidden-by-editor');
-    save();applyAll();syncInspector();
-  };
-
-  $('#resetAllBtn').onclick=()=>{
-    if(!confirm('Restaurar toda a janela para o layout original deste editor?'))return;
-    pushHistory();
-    config={schemaVersion:1,editor:'adicionar-alimento',elements:{}};
-    elements().forEach(el=>{el.removeAttribute('style');el.classList.remove('hidden-by-editor')});
-    save();
-    if(selected)select(selected);
-  };
-
-  $('#undoBtn').onclick=()=>{
-    const prev=history.pop();
-    if(!prev)return;
-    try{config=JSON.parse(prev);save();applyAll();if(selected)syncInspector()}catch{}
-  };
-
-  function exportPayload(){
-    return {
-      schemaVersion:1,
-      editor:'adicionar-alimento',
-      source:'NutriTrack Beta',
-      exportedAt:new Date().toISOString(),
-      notes:'Configurações visuais do editor paralelo da janela Adicionar alimento.',
-      elements:config.elements
-    };
-  }
-  $('#exportBtn').onclick=()=>{
-    const blob=new Blob([JSON.stringify(exportPayload(),null,2)],{type:'application/json'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='nutritrack-editor-adicionar-alimento-'+new Date().toISOString().slice(0,10)+'.json';
-    a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
-  };
-  $('#copyBtn').onclick=async()=>{
-    try{await navigator.clipboard.writeText(JSON.stringify(exportPayload(),null,2));$('#copyBtn').textContent='Copiado ✓';setTimeout(()=>$('#copyBtn').textContent='Copiar JSON',1200)}
-    catch{alert('Não foi possível copiar. Use Exportar JSON.')}
-  };
-  $('#importBtn').onclick=()=>$('#importFile').click();
-  $('#importFile').onchange=async e=>{
-    const file=e.target.files?.[0];if(!file)return;
-    try{
-      const data=JSON.parse(await file.text());
-      if(!data||!data.elements)throw new Error();
-      pushHistory();
-      config={schemaVersion:1,editor:'adicionar-alimento',elements:data.elements};
-      save();applyAll();if(selected)syncInspector();
-      $('#previewRoot').classList.add('flash');setTimeout(()=>$('#previewRoot').classList.remove('flash'),500);
-    }catch{alert('JSON inválido para este editor.')}
-    e.target.value='';
-  };
-
-  load();applyAll();
-  const first=document.querySelector('[data-editor-id="caloriesField"]')||elements()[0];
-  if(first)select(first);
-})();
-</script>
+<script src="./editor.js?v=2"></script>
 </body>
 </html>
