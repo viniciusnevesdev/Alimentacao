@@ -5,7 +5,8 @@
     'alimentacao-hidratacao-v1':'alimentacao-beta-hidratacao-v1',
     'alimentacao-watch-v1':'alimentacao-beta-watch-v1',
     'alimentacao-medidas-v1':'alimentacao-beta-medidas-v1',
-    'alimentacao-snapshots-v1':'alimentacao-beta-snapshots-v1'
+    'alimentacao-snapshots-v1':'alimentacao-beta-snapshots-v1',
+    'alimentacao-custom-foods-v1':'alimentacao-beta-custom-foods-v1'
   };
   const mapKey=key=>keyMap[key]||key;
   const proto=Storage.prototype;
@@ -18,10 +19,10 @@
 
   document.title='NutriTrack Beta';
   const badge=document.querySelector('.badge');
-  if(badge) badge.textContent='PRO · BETA';
+  if(badge) badge.textContent='PRO · BETA 0.16';
 
   const script=document.createElement('script');
-  script.src='./base-app.js?v=7';
+  script.src='./base-app.js?v=8';
   script.onload=()=>{document.documentElement.dataset.channel='beta';};
   script.onerror=()=>alert('Não foi possível iniciar a versão Beta.');
   document.body.appendChild(script);
