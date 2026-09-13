@@ -17,13 +17,14 @@
   proto.setItem=function(key,value){return originalSet.call(this,mapKey(key),value);};
   proto.removeItem=function(key){return originalRemove.call(this,mapKey(key));};
 
+  document.documentElement.dataset.channel='beta';
   document.title='NutriTrack Beta';
   const badge=document.querySelector('.badge');
-  if(badge) badge.textContent='PRO · BETA 0.16';
+  if(badge) badge.textContent='PRO · BETA';
 
   const script=document.createElement('script');
-  script.src='./base-app.js?v=8';
-  script.onload=()=>{document.documentElement.dataset.channel='beta';};
+  script.src='./base-app.js?v=9';
+  script.onload=()=>{};
   script.onerror=()=>alert('Não foi possível iniciar a versão Beta.');
   document.body.appendChild(script);
 })();
