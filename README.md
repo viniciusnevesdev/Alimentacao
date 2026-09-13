@@ -2,6 +2,14 @@
 
 PWA pessoal para registrar alimentação, acompanhar calorias, macronutrientes, hidratação e qualidade nutricional.
 
+## Versões do aplicativo
+
+- **Oficial:** `1.0.0`
+- **Beta:** `1.1.0-beta`
+- Esses números são as versões do produto e ficam centralizados em `version.js`.
+- Números técnicos como `v14`, `v16` etc. servem apenas para cache/cache-busting e não representam a versão do aplicativo.
+- Os backups registram também `releaseVersion`, indicando a versão que gerou o arquivo.
+
 ## Interface atual
 
 A interface principal foi reconstruída usando o projeto `Food-Gemini` como referência visual e estrutural, mantendo o app leve e compatível com publicação direta no GitHub Pages.
