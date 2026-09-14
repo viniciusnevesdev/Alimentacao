@@ -61,3 +61,31 @@
   width:100%;
   min-width:0;
 }
+
+/* Fechamento consistente em todas as janelas. */
+.modal-head{
+  position:relative;
+  padding-left:60px;
+}
+.modal-head .close-btn{
+  position:absolute;
+  left:19px;
+  top:50%;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  padding:0;
+}
+.modal-head .close-btn svg{
+  display:block;
+  width:20px;
+  height:20px;
+  fill:currentColor;
+}
+#entryDialog .modal-head{
+  justify-content:center;
+  padding-right:60px;
+  text-align:center;
+}
+#entryDialog .modal-head>div{width:100%}
+#entryDialog .modal-head p{display:none}
