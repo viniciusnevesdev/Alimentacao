@@ -89,3 +89,16 @@
 }
 #entryDialog .modal-head>div{width:100%}
 #entryDialog .modal-head p{display:none}
+
+/* Ícone de fechar sem caixa visual, com área confortável de 44 pt. */
+.modal-head .close-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.modal-head .close-btn svg{
+  width:44px;
+  height:44px;
+}
