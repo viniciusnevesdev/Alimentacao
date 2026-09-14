@@ -5,8 +5,10 @@
 
 /* Data e horário: manter exatamente o mesmo footprint visual dos demais campos no iOS/Safari */
 #entryDialog .entry-meta-grid{
+  display:grid;
+  width:100%;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  column-gap:10px;
+  gap:10px;
 }
 #entryDialog .entry-meta-grid>.field{
   width:100%;
@@ -21,6 +23,8 @@
   width:100%;
   max-width:100%;
   min-width:0;
+  min-inline-size:0;
+  -webkit-min-logical-width:0;
   box-sizing:border-box;
   height:38px;
   min-height:38px;
@@ -32,8 +36,9 @@
   font-size:12px;
   border-radius:11px;
   line-height:normal;
-  -webkit-appearance:auto;
-  appearance:auto;
+  -webkit-appearance:none;
+  appearance:none;
+  overflow:hidden;
 }
 #entryDialog #entryDate::-webkit-date-and-time-value,
 #entryDialog #entryTime::-webkit-date-and-time-value{
@@ -43,3 +48,16 @@
 }
 #entryDialog #entryDate::-webkit-datetime-edit,
 #entryDialog #entryTime::-webkit-datetime-edit{padding:0}
+
+/* Ações do formulário de adicionar alimento: sempre duas metades iguais. */
+#entryDialog .modal-actions{
+  display:grid;
+  width:100%;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  justify-content:stretch;
+}
+#entryDialog .modal-actions .btn{
+  width:100%;
+  min-width:0;
+}
