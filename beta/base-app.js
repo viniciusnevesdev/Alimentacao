@@ -104,7 +104,7 @@
   function setMacro(key,value,goal,kcalPerGram){$(`#${key}Value`).textContent=fmt(value,1);$(`#${key}Goal`).textContent=fmt(goal);$(`#${key}Percent`).textContent=`${Math.round(progress(value,goal))}%`;$(`#${key}Progress`).style.width=`${progress(value,goal)}%`;$(`#${key}Kcal`).textContent=`${fmt(value*kcalPerGram)} kcal`;$(`#${key}Remaining`).textContent=`${fmt(Math.max(0,goal-value),1)}g restantes`}
   function entryHtml(e){const estimated=e.estimateSource?'<span class="estimate-chip">≈ estimado</span>':'';return `<div class="entry"><div><div class="entry-title">${escapeHtml(e.food)} <span class="quality-chip ${qualityClass(e.quality)}">Q${e.quality||3}/5</span>${estimated}</div><div class="entry-meta">${escapeHtml(e.amount||'Quantidade não informada')} · ${escapeHtml(e.time||'--:--')}${e.notes?` · ${escapeHtml(e.notes)}`:''}</div></div><div class="entry-side"><div class="entry-kcal">${fmt(num(e.calories))} <small>kcal</small></div><div class="entry-macros"><span class="p">P: ${fmt(num(e.protein),1)}g</span> · <span class="c">C: ${fmt(num(e.carbs),1)}g</span> · <span class="f">G: ${fmt(num(e.fat),1)}g</span></div><div class="entry-buttons"><button class="link-btn" data-edit="${e.id}" aria-label="Editar">${icon('edit')}</button><button class="link-btn" data-delete="${e.id}" aria-label="Excluir">${icon('trash')}</button></div></div></div>`}
 
-  function renderCatalog(){const query=($('#catalogSearch')?.value||'').trim();const all=window.NutritionHelper?.foods||[];const foods=query?(window.NutritionHelper?.search(query,80)||[]):all;$('#foodCatalog').innerHTML=foods.map(food=>{const sample=window.NutritionHelper.estimate(food,'');const source=food.custom?(food.source==='openfoodfacts'?'Personalizado • Open Food Facts':'Personalizado'):'Base local';return `<article class="card food-card"><h3>${escapeHtml(food.name)}</h3><p>${source} • ${escapeHtml(food.standard)}${food.foodScore?` • FoodScore ${fmt(food.foodScore)}/100`:''}</p><div class="food-row"><div class="food-kcal">${fmt(sample.calories)} <small>kcal</small></div><div class="food-macro"><span class="p">P: ${fmt(sample.protein,1)}g</span> · <span class="c">C: ${fmt(sample.carbs,1)}g</span> · <span class="f">G: ${fmt(sample.fat,1)}g</span></div></div><div class="food-actions"><button class="link-btn" data-catalog-add="${food.id}">${icon('plus')} Adicionar</button>${food.custom?`<button class="link-btn" data-custom-delete="${food.id}">${icon('trash')} Excluir</button>`:''}</div></article>`}).join('')||'<article class="card meal-empty">Nenhum alimento encontrado.</article>';$$('[data-catalog-add]').forEach(b=>b.onclick=()=>{switchView('diary');openNew('Outro',b.dataset.catalogAdd)});$$('[data-custom-delete]').forEach(b=>b.onclick=()=>deleteCustomFood(b.dataset.customDelete))}
+  function renderCatalog(){const query=($('#catalogSearch')?.value||'').trim();const all=window.NutritionHelper?.foods||[];const foods=query?(window.NutritionHelper?.search(query,80)||[]):all;$('#foodCatalog').innerHTML=foods.map(food=>{const sample=window.NutritionHelper.estimate(food,'');const source=food.custom?'Personalizado':'Base local';return `<article class="card food-card"><h3>${escapeHtml(food.name)}</h3><p>${source} • ${escapeHtml(food.standard)}</p><div class="food-row"><div class="food-kcal">${fmt(sample.calories)} <small>kcal</small></div><div class="food-macro"><span class="p">P: ${fmt(sample.protein,1)}g</span> · <span class="c">C: ${fmt(sample.carbs,1)}g</span> · <span class="f">G: ${fmt(sample.fat,1)}g</span></div></div><div class="food-actions"><button class="link-btn" data-catalog-add="${food.id}">${icon('plus')} Adicionar</button>${food.custom?`<button class="link-btn" data-custom-delete="${food.id}">${icon('trash')} Excluir</button>`:''}</div></article>`}).join('')||'<article class="card meal-empty">Nenhum alimento encontrado.</article>';$$('[data-catalog-add]').forEach(b=>b.onclick=()=>{switchView('diary');openNew('Outro',b.dataset.catalogAdd)});$$('[data-custom-delete]').forEach(b=>b.onclick=()=>deleteCustomFood(b.dataset.customDelete))}
 
   function syncCustomFoodsToHelper(){
     if(!window.NutritionHelper?.foods)return;
@@ -113,145 +113,14 @@
     customFoods.forEach(food=>{const i=window.NutritionHelper.foods.findIndex(f=>f.id===food.id);if(i>=0)window.NutritionHelper.foods[i]=food;else window.NutritionHelper.foods.push(food)});
   }
   function openCustomFood(prefill=''){
-    $('#customFoodForm').reset();$('#customFoodForm').dataset.source='manual';$('#customFoodForm').dataset.desrotulandoProductId='';$('#customFoodId').value='';$('#customFoodName').value=prefill||'';$('#customFoodRefQty').value=100;$('#customFoodUnit').value='g';$('#customFoodQuality').value=3;$('#customFoodScore').value='';$('#customFoodScoreSource').value='manual';$('#onlineFoodStatus').textContent='A busca nutricional usa Open Food Facts. A consulta ao Desrotulando é experimental e pode deixar de funcionar.';$('#customFoodDialog').showModal();setTimeout(()=>$('#customFoodName').focus(),80);
-  }
-  function openFoodProduct(product){
-    const n=product?.nutriments||{},name=(product.product_name||'').trim(),brand=(product.brands||'').split(',')[0]?.trim();
-    if(!name)throw new Error('Produto sem nome');
-    const kcal=Number(n['energy-kcal_100g']??(Number(n.energy_100g)?Number(n.energy_100g)/4.184:NaN));
-    if(!Number.isFinite(kcal))throw new Error('Produto sem dados nutricionais por 100 g');
-    $('#customFoodName').value=brand&&!name.toLowerCase().includes(brand.toLowerCase())?name+' — '+brand:name;
-    $('#customFoodBarcode').value=product.code||$('#customFoodBarcode').value;
-    $('#customFoodRefQty').value=100;$('#customFoodUnit').value='g';$('#customFoodCalories').value=Math.round(kcal);$('#customFoodProtein').value=Number(n.proteins_100g||0).toFixed(1);$('#customFoodCarbs').value=Number(n.carbohydrates_100g||0).toFixed(1);$('#customFoodFat').value=Number(n.fat_100g||0).toFixed(1);$('#onlineFoodStatus').textContent='Dados encontrados no Open Food Facts. Revise o rótulo antes de salvar.';
-    $('#customFoodForm').dataset.source='openfoodfacts';
-  }
-  async function lookupBarcode(){
-    const code=$('#customFoodBarcode').value.replace(/\D/g,'');if(!code){toast('Digite o código de barras');return}
-    $('#onlineFoodStatus').textContent='Buscando produto...';
-    try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json?fields=code,product_name,brands,nutriments',{cache:'no-store'});if(!r.ok)throw new Error();const data=await r.json();if(!data.product)throw new Error();openFoodProduct(data.product)}
-    catch{$('#onlineFoodStatus').textContent='Produto não encontrado ou sem dados suficientes. Você pode preencher manualmente.'}
-  }
-  async function lookupFoodName(){
-    const q=$('#customFoodName').value.trim();if(q.length<2){toast('Digite o nome do alimento');return}
-    $('#onlineFoodStatus').textContent='Buscando pelo nome...';
-    try{const url='https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(q)+'&search_simple=1&action=process&json=1&page_size=8&fields=code,product_name,brands,nutriments';const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error();const data=await r.json();const product=(data.products||[]).find(p=>p.product_name&&p.nutriments&&(p.nutriments['energy-kcal_100g']||p.nutriments.energy_100g));if(!product)throw new Error();openFoodProduct(product);$('#onlineFoodStatus').textContent='Encontrei um resultado por nome no Open Food Facts. Pode ser um produto industrializado com nome parecido; confira antes de salvar.'}
-    catch{$('#onlineFoodStatus').textContent='Nenhum resultado confiável encontrado. Para receitas como bolo de fubá, os valores variam com a receita; preencha manualmente ou pelo rótulo.'}
-  }
-  function qualityFromFoodScore(score){
-    const value=Math.max(1,Math.min(100,Number(score)||0));
-    return Math.max(1,Math.min(5,Math.ceil(value/20)));
-  }
-  function findFoodScore(value,depth=0){
-    if(depth>5||value==null)return null;
-    if(Array.isArray(value)){for(const item of value){const found=findFoodScore(item,depth+1);if(found)return found}return null}
-    if(typeof value!=='object')return null;
-    for(const key of ['product_score','food_score','foodScore','foodscore']){
-      const n=Number(value[key]);
-      if(Number.isFinite(n)&&n>=1&&n<=100)return n;
-      if(value[key]&&typeof value[key]==='object'){
-        const nested=Number(value[key].value??value[key].score??value[key].total);
-        if(Number.isFinite(nested)&&nested>=1&&nested<=100)return nested;
-      }
-    }
-    if(Object.prototype.hasOwnProperty.call(value,'score')){
-      const n=Number(value.score);
-      if(Number.isFinite(n)&&n>=1&&n<=100)return n;
-    }
-    for(const child of Object.values(value)){const found=findFoodScore(child,depth+1);if(found)return found}
-    return null;
-  }
-  function applyFoodScore(score,source='Desrotulando (experimental)'){
-    const normalized=Math.max(1,Math.min(100,Math.round(Number(score)/5)*5||Number(score)));
-    if(!Number.isFinite(normalized))return false;
-    $('#customFoodScore').value=normalized;
-    $('#customFoodScoreSource').value=source;
-    $('#customFoodQuality').value=qualityFromFoodScore(normalized);
-    return true;
-  }
-  function decodeDesrotulandoProductId(link){
-    try{
-      const url=new URL(link.trim());
-      if(url.hostname!=='deeplink.desrotulando.com')return null;
-      const parts=url.pathname.split('/').filter(Boolean);
-      const raw=parts[parts.length-1]||'';
-      if(/^[a-f0-9]{24}$/i.test(raw))return raw.toLowerCase();
-      const normalized=raw.replace(/-/g,'+').replace(/_/g,'/');
-      const padded=normalized+'='.repeat((4-normalized.length%4)%4);
-      const decoded=atob(padded).trim();
-      return /^[a-f0-9]{24}$/i.test(decoded)?decoded.toLowerCase():null;
-    }catch{return null}
-  }
-  async function lookupDesrotulandoByProductId(productId){
-    const base='https://api.desrotulando.com/prod';
-    const urls=[
-      base+'/products/'+encodeURIComponent(productId),
-      base+'/product/'+encodeURIComponent(productId),
-      base+'/product?id='+encodeURIComponent(productId)
-    ];
-    let blocked=false,lastStatus=0;
-    for(const url of urls){
-      try{
-        const r=await fetch(url,{method:'GET',cache:'no-store',mode:'cors',credentials:'omit',headers:{Accept:'application/json'}});
-        lastStatus=r.status;
-        if(r.status===401||r.status===403){blocked=true;break}
-        if(!r.ok)continue;
-        const data=await r.json();
-        const score=findFoodScore(data);
-        if(score){
-          applyFoodScore(score);
-          $('#customFoodForm').dataset.scoreSource='desrotulando';
-          $('#onlineFoodStatus').textContent='Produto identificado pelo link e FoodScore encontrado: '+$('#customFoodScore').value+'/100. Confira antes de salvar.';
-          return true;
-        }
-      }catch{}
-    }
-    $('#customFoodScoreSource').value='manual';
-    $('#onlineFoodStatus').textContent=blocked||lastStatus===403
-      ?'O link foi reconhecido e o produto foi identificado, mas o Desrotulando bloqueou a leitura dos dados sem autenticação. Você ainda pode informar o FoodScore manualmente.'
-      :'O link foi reconhecido, mas não consegui obter os dados desse produto agora.';
-    return false;
-  }
-  async function lookupDesrotulandoLink(){
-    const link=$('#customFoodDesrotulandoUrl').value.trim();
-    if(!link){toast('Cole o link compartilhado do Desrotulando');return}
-    const productId=decodeDesrotulandoProductId(link);
-    if(!productId){$('#onlineFoodStatus').textContent='Não reconheci um identificador de produto nesse link do Desrotulando.';return}
-    $('#customFoodForm').dataset.desrotulandoProductId=productId;
-    $('#onlineFoodStatus').textContent='Link reconhecido. Produto identificado; tentando obter o FoodScore...';
-    await lookupDesrotulandoByProductId(productId);
-  }
-
-  async function lookupDesrotulando(){
-    const code=$('#customFoodBarcode').value.replace(/\D/g,'');
-    if(!code){toast('Digite o código de barras para consultar o Desrotulando');return}
-    $('#onlineFoodStatus').textContent='Consultando o Desrotulando de forma experimental...';
-    const base='https://api.desrotulando.com/prod';
-    const urls=[
-      base+'/product?ean='+encodeURIComponent(code),
-      base+'/product/'+encodeURIComponent(code),
-      base+'/search?ean='+encodeURIComponent(code)
-    ];
-    let blocked=false,lastStatus=0;
-    for(const url of urls){
-      try{
-        const r=await fetch(url,{method:'GET',cache:'no-store',mode:'cors',credentials:'omit',headers:{Accept:'application/json'}});
-        lastStatus=r.status;
-        if(r.status===401||r.status===403){blocked=true;break}
-        if(!r.ok)continue;
-        const data=await r.json();
-        const score=findFoodScore(data);
-        if(score){
-          applyFoodScore(score);
-          $('#customFoodForm').dataset.scoreSource='desrotulando';
-          $('#onlineFoodStatus').textContent='FoodScore encontrado no Desrotulando: '+$('#customFoodScore').value+'/100. A qualidade 1–5 foi preenchida automaticamente; confira antes de salvar.';
-          return;
-        }
-      }catch{}
-    }
-    $('#customFoodScoreSource').value='manual';
-    $('#onlineFoodStatus').textContent=blocked||lastStatus===403
-      ?'O Desrotulando bloqueou a consulta direta sem autenticação. A integração experimental ficou disponível, mas neste momento você precisa informar o FoodScore manualmente; a busca nutricional pelo Open Food Facts continua funcionando.'
-      :'Não consegui obter o FoodScore agora. Você pode tentar novamente ou informar a nota manualmente.';
+    $('#customFoodForm').reset();
+    $('#customFoodId').value='';
+    $('#customFoodName').value=prefill||'';
+    $('#customFoodRefQty').value=100;
+    $('#customFoodUnit').value='g';
+    $('#customFoodQuality').value=3;
+    $('#customFoodDialog').showModal();
+    setTimeout(()=>$('#customFoodName').focus(),80);
   }
 
   function deleteCustomFood(id){
@@ -342,7 +211,7 @@
 
   $('#entryForm').addEventListener('submit',ev=>{ev.preventDefault();const id=$('#entryId').value||uid(),entry={id,date:$('#entryDate').value,time:$('#entryTime').value,meal:$('#meal').value,food:$('#food').value.trim(),amount:$('#amount').value.trim(),calories:num($('#calories').value),quality:num($('input[name="quality"]:checked')?.value||3),protein:num($('#protein').value),carbs:num($('#carbs').value),fat:num($('#fat').value),notes:$('#notes').value.trim(),estimateSource,updatedAt:new Date().toISOString()};const i=entries.findIndex(e=>e.id===id);if(i>=0)entries[i]=entry;else entries.push(entry);persist();$('#selectedDate').value=entry.date;$('#entryDialog').close();switchView('diary');render();toast(i>=0?'Registro atualizado':'Alimento adicionado')});
   $('#watchForm').addEventListener('submit',ev=>{ev.preventDefault();watchLogs[currentDate()]={activeCalories:num($('#watch-active-input').value),basalCalories:num($('#watch-basal-input').value),exerciseMinutes:num($('#watch-exercise-input').value),standHours:num($('#watch-stand-input').value),steps:num($('#watch-steps-input').value),distanceKm:num($('#watch-distance-input').value),restingHeartRate:num($('#watch-resting-input').value),currentHeartRate:num($('#watch-current-input').value),sleepHours:num($('#watch-sleep-input').value),updatedAt:new Date().toISOString()};persist();$('#watchDialog').close();render();toast('Dados de atividade salvos')});
-  $('#customFoodForm').addEventListener('submit',ev=>{ev.preventDefault();const name=$('#customFoodName').value.trim(),refQty=Math.max(.1,num($('#customFoodRefQty').value)),unit=$('#customFoodUnit').value==='ml'?'ml':'g',factor=100/refQty,id=$('#customFoodId').value||'custom-'+uid();const foodScoreRaw=num($('#customFoodScore').value),food={id,name,aliases:[name],kcal:num($('#customFoodCalories').value)*factor,protein:num($('#customFoodProtein').value)*factor,carbs:num($('#customFoodCarbs').value)*factor,fat:num($('#customFoodFat').value)*factor,quality:num($('#customFoodQuality').value)||3,standard:refQty+' '+unit,baseUnit:unit,units:{},custom:true,barcode:$('#customFoodBarcode').value.replace(/\D/g,''),source:$('#customFoodForm').dataset.source||'manual',foodScore:foodScoreRaw>=1&&foodScoreRaw<=100?foodScoreRaw:null,scoreSource:foodScoreRaw>=1&&foodScoreRaw<=100?($('#customFoodScoreSource').value||'manual'):null,desrotulandoUrl:$('#customFoodDesrotulandoUrl').value.trim()||null,desrotulandoProductId:$('#customFoodForm').dataset.desrotulandoProductId||null};const same=customFoods.findIndex(f=>window.NutritionHelper.normalize(f.name)===window.NutritionHelper.normalize(name));if(same>=0){food.id=customFoods[same].id;customFoods[same]=food}else customFoods.push(food);syncCustomFoodsToHelper();persist();$('#customFoodDialog').close();render();if($('#entryDialog').open){selectedFood=food;selectSuggestion(food)}toast(same>=0?'Alimento personalizado atualizado':'Alimento adicionado ao banco')});
+  $('#customFoodForm').addEventListener('submit',ev=>{ev.preventDefault();const name=$('#customFoodName').value.trim(),refQty=Math.max(.1,num($('#customFoodRefQty').value)),unit=$('#customFoodUnit').value==='ml'?'ml':'g',factor=100/refQty,id=$('#customFoodId').value||'custom-'+uid(),food={id,name,aliases:[name],kcal:num($('#customFoodCalories').value)*factor,protein:num($('#customFoodProtein').value)*factor,carbs:num($('#customFoodCarbs').value)*factor,fat:num($('#customFoodFat').value)*factor,quality:num($('#customFoodQuality').value)||3,standard:refQty+' '+unit,baseUnit:unit,units:{},custom:true,source:'manual'};const same=customFoods.findIndex(f=>window.NutritionHelper.normalize(f.name)===window.NutritionHelper.normalize(name));if(same>=0){food.id=customFoods[same].id;customFoods[same]=food}else customFoods.push(food);syncCustomFoodsToHelper();persist();$('#customFoodDialog').close();render();if($('#entryDialog').open){selectedFood=food;selectSuggestion(food)}toast(same>=0?'Alimento personalizado atualizado':'Alimento adicionado ao banco')});
 
   $('#measurementForm').addEventListener('submit',ev=>{ev.preventDefault();const date=$('#measurementDate').value;const existing=measurements.find(m=>m.date===date);const item={id:existing?.id||uid(),date,weight:num($('#measurementWeight').value),bodyFat:num($('#measurementFat').value),waist:num($('#measurementWaist').value)};measurements=measurements.filter(m=>m.id!==item.id&&m.date!==date);measurements.push(item);persist();$('#measurementDialog').close();render();toast('Medição salva')});
 
@@ -355,7 +224,7 @@
   $$('.tab').forEach(t=>t.onclick=()=>switchView(t.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>switchView(b.dataset.viewJump));
   $$('.period-pills button').forEach(b=>b.onclick=()=>{analyticsPeriod=num(b.dataset.period);$$('.period-pills button').forEach(x=>x.classList.toggle('active',x===b));renderAnalytics()});
   $('#waterMinus').onclick=()=>updateWater(-250);$('#water250').onclick=()=>updateWater(250);$('#water500').onclick=()=>updateWater(500);$('#heroGoals').onclick=()=>switchView('backup');$('#editWatch').onclick=openWatchEditor;$('#newMeasurement').onclick=openMeasurement;$('#saveSnapshot').onclick=createSnapshot;
-  $('#scanPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#createFoodPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());$('#lookupBarcode').onclick=lookupBarcode;$('#lookupFoodName').onclick=lookupFoodName;$('#lookupDesrotulandoLink').onclick=lookupDesrotulandoLink;$('#lookupDesrotulando').onclick=lookupDesrotulando;$('#customFoodScore').addEventListener('input',()=>{const score=num($('#customFoodScore').value);$('#customFoodScoreSource').value='manual';if(score>=1&&score<=100)$('#customFoodQuality').value=qualityFromFoodScore(score)});
+  $('#scanPlaceholder').onclick=()=>{$('#catalogSearch').focus();$('#catalogSearch').scrollIntoView({behavior:'smooth',block:'center'})};$('#createFoodPlaceholder').onclick=()=>openCustomFood($('#catalogSearch').value.trim());
   $('#saveGoals').onclick=()=>{settings={...settings,calorieGoal:num($('#setting-calorieGoal').value),proteinGoal:num($('#setting-proteinGoal').value),carbsGoal:num($('#setting-carbsGoal').value),fatGoal:num($('#setting-fatGoal').value),waterGoal:num($('#setting-waterGoal').value),weightGoal:num($('#setting-weightGoal').value)};persist();render();toast('Metas salvas')};
   $('#exportBtn').onclick=()=>{const payload=createBackupPayload();const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);const prefix=payload.sourceChannel==='beta'?'nutritrack-beta-backup':'nutritrack-backup';a.download=prefix+'-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=async ev=>{const file=ev.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text()),backup=normalizeBackupPayload(data),newer=backup.schemaVersion>BACKUP_SCHEMA_VERSION;const warning=newer?'\n\nEste backup usa um formato mais novo. Serão importados os campos compatíveis; dados adicionais que esta versão ainda não conhece serão ignorados.':'';if(!confirm(`Importar ${backup.entries.length} registros e substituir os dados atuais?${warning}`))return;entries=backup.entries;settings={...defaults,...backup.settings};waterLogs=backup.waterLogs;watchLogs=backup.watchLogs;measurements=backup.measurements;snapshots=backup.snapshots??snapshots;customFoods=backup.customFoods||[];syncCustomFoodsToHelper();persist();render();toast(newer?'Backup compatível restaurado':'Backup restaurado')}catch{alert('Não foi possível importar este arquivo.')}ev.target.value=''};
   $('#clearBtn').onclick=()=>{if(!confirm('Apagar registros, hidratação, atividade, medidas e ajustes deste aparelho?'))return;entries=[];waterLogs={};watchLogs={};measurements=[];snapshots=[];customFoods=[];settings={...defaults};syncCustomFoodsToHelper();persist();render();toast('Dados apagados')};$$('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
