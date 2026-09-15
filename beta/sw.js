@@ -1,4 +1,4 @@
-const CACHE='nutritrack-beta-v30';
+const CACHE='nutritrack-beta-v31';
 const ASSETS=['./','./index.html','../layout-fixes.css','../icon-rendering.css','../version.js','./manifest.webmanifest','./app.js','./base-index.html','./base-app.js','./styles.css','./nutrition-data.js','./tab-animation.css','./tab-animation.js','./editor.html','./editor.css','./editor.js','./editor-adicionar-alimento.html','./icon-beta-192.png','./icon-beta-512.png','./apple-touch-icon.png','./favicon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting();}); 
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('nutritrack-beta-')&&key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim();});
