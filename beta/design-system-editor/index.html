@@ -49,11 +49,66 @@ a{color:inherit;text-decoration:none}
 .hero h2{font-size:23px;line-height:1.05;margin:4px 0 0;letter-spacing:-.04em}
 .hero p{font-size:11px;color:var(--muted);margin:7px 0 0;line-height:1.45;max-width:640px}
 .scope{font-size:9px;font-weight:800;color:#64748b;background:#f1f5f9;padding:7px 9px;border-radius:9px;white-space:nowrap}
-.preview-panel{padding:14px}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.panel-head h3{font-size:13px;margin:0}.panel-head span{font-size:9px;color:var(--muted)}
-.preview-stage{min-height:230px;border:1px dashed #ced8e3;border-radius:16px;background:linear-gradient(145deg,#f8fafc,#eef3f7);padding:18px;display:grid;place-items:center;overflow:hidden}
-.preview-device{width:min(100%,430px);min-height:185px;background:#f6f8fb;border-radius:20px;padding:16px;border:1px solid #e3e9ef;box-shadow:0 12px 35px rgba(15,23,42,.06);display:grid;place-items:center}
+.preview-panel{
+  position:sticky;
+  top:70px;
+  z-index:35;
+  padding:8px 10px 10px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(18px);
+  box-shadow:0 8px 24px rgba(15,23,42,.08)
+}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.panel-head h3{font-size:12px;margin:0}.panel-head span{font-size:8.5px;color:var(--muted)}
+.preview-stage{
+  position:relative;
+  height:126px;
+  min-height:0;
+  border:1px solid #e1e7ed;
+  border-radius:14px;
+  background:#f6f8fb;
+  padding:8px 44px 8px 8px;
+  display:grid;
+  place-items:center;
+  overflow:hidden
+}
+.preview-device{
+  width:min(100%,360px);
+  min-height:0;
+  max-height:108px;
+  background:#f6f8fb;
+  border-radius:14px;
+  padding:8px;
+  border:0;
+  box-shadow:none;
+  display:grid;
+  place-items:center;
+  overflow:auto
+}
+.preview-compare{
+  position:absolute;
+  right:7px;
+  top:7px;
+  z-index:3;
+  width:31px;
+  height:31px;
+  border:1px solid rgba(100,116,139,.22);
+  border-radius:999px;
+  background:rgba(255,255,255,.9);
+  color:#64748b;
+  padding:0;
+  display:grid;
+  place-items:center;
+  font-size:8px;
+  font-weight:850;
+  letter-spacing:-.02em;
+  box-shadow:0 2px 8px rgba(15,23,42,.06)
+}
+.preview-compare.active{
+  background:#0f172a;
+  color:#fff;
+  border-color:#0f172a
+}
 .sample-card{width:100%;background:var(--sample-bg,#fff);border:var(--sample-border-width,1px) solid var(--sample-border,#dfe6ee);border-radius:var(--sample-radius,24px);padding:var(--sample-padding,18px);box-shadow:0 var(--sample-shadow-y,8px) var(--sample-shadow-blur,22px) rgba(15,23,42,var(--sample-shadow-opacity,.04));filter:drop-shadow(0 0 var(--sample-glow-blur,0px) rgba(16,166,111,var(--sample-glow-opacity,0)));transition:.15s}
 .sample-row{display:flex;align-items:center;gap:11px}.sample-icon{width:var(--sample-icon-box,38px);height:var(--sample-icon-box,38px);border-radius:var(--sample-icon-radius,12px);background:#eafaf3;color:#10a66f;display:grid;place-items:center;font-size:var(--sample-icon-size,20px);flex:none}
 .sample-card h4{font-size:var(--sample-title-size,15px);font-weight:var(--sample-title-weight,800);margin:0}.sample-card p{font-size:var(--sample-description-size,10px);font-weight:var(--sample-description-weight,400);color:#65748f;margin:4px 0 0}
@@ -88,12 +143,45 @@ input[type=range]{width:100%;height:34px;margin:0;accent-color:var(--green);touc
 .bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid #e3eaf0;padding:9px 16px calc(9px + env(safe-area-inset-bottom))}
 .bottom-inner{max-width:1280px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:9px}
 .history-actions,.publish-actions{display:flex;gap:7px}
+.history-icon{
+  width:38px;
+  height:42px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#475569;
+  padding:0;
+  display:grid;
+  place-items:center
+}
+.history-icon svg{width:24px;height:24px;display:block}
+.history-icon:disabled{opacity:.28}
 .action{height:42px;border:1px solid #dce4ec;border-radius:12px;background:#fff;color:#334155;padding:0 13px;font-size:11px;font-weight:850}
 .action:disabled{opacity:.38}.action.primary{background:linear-gradient(180deg,#15ad76,#079b67);border-color:#0a9f69;color:#fff}.action.soft{background:#f4f7fa}.action.danger{color:#c62a50}
 .file-input{display:none}
 .toast{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:100;background:#0d182d;color:#fff;border-radius:999px;padding:10px 14px;font-size:10px;font-weight:750;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.catalog{position:static;max-height:none}.catalog-list{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px}.group{margin:0;display:contents}.group-title{display:none}.component-item{min-width:146px;border:1px solid #e5ebf1;background:#fff}.component-copy small{max-width:90px}.controls-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.topbar-inner{padding:10px 12px}.brand p{display:none}.brand h1{font-size:16px}.back-btn{width:38px;padding:0;font-size:0}.back-btn:before{content:"‹";font-size:25px}.shell{padding:12px 12px calc(104px + env(safe-area-inset-bottom))}.layout,.workspace{gap:10px}.panel{border-radius:17px}.catalog{padding:10px}.component-item{min-width:136px;padding:8px}.component-icon{width:29px;height:29px}.hero{padding:15px}.hero h2{font-size:20px}.scope{display:none}.preview-panel,.controls-panel{padding:11px}.preview-stage{padding:10px;min-height:215px}.preview-device{padding:12px}.controls-grid{grid-template-columns:1fr}.bottom-bar{padding-left:10px;padding-right:10px}.bottom-inner{align-items:stretch}.history-actions{gap:5px}.publish-actions{gap:5px;flex:1;justify-content:flex-end}.action{padding:0 10px;height:40px}.action span.hide-mobile{display:none}}
+@media(max-width:620px){
+  .topbar-inner{padding:10px 12px}
+  .brand p{display:none}.brand h1{font-size:16px}
+  .back-btn{width:38px;padding:0;font-size:0}.back-btn:before{content:"‹";font-size:25px}
+  .shell{padding:12px 12px calc(104px + env(safe-area-inset-bottom))}
+  .layout,.workspace{gap:10px}.panel{border-radius:17px}.catalog{padding:10px}
+  .component-item{min-width:136px;padding:8px}.component-icon{width:29px;height:29px}
+  .hero{padding:15px}.hero h2{font-size:20px}.scope{display:none}
+  .preview-panel{top:60px;padding:7px 8px 8px;border-radius:14px}
+  .preview-panel .panel-head{margin-bottom:5px}
+  .preview-panel .panel-head span{display:none}
+  .preview-stage{height:108px;padding:6px 39px 6px 6px;border-radius:12px}
+  .preview-device{width:100%;max-height:94px;padding:5px;border-radius:10px}
+  .preview-compare{right:5px;top:5px;width:29px;height:29px;font-size:7.5px}
+  .controls-panel{padding:11px}
+  .controls-grid{grid-template-columns:1fr}
+  .bottom-bar{padding-left:10px;padding-right:10px}.bottom-inner{align-items:stretch}
+  .history-actions{gap:2px}.publish-actions{gap:5px;flex:1;justify-content:flex-end}
+  .history-icon{width:34px;height:40px}
+  .action{padding:0 10px;height:40px}.action span.hide-mobile{display:none}
+}
 </style>
 </head>
 <body>
@@ -133,6 +221,7 @@ input[type=range]{width:100%;height:34px;margin:0;accent-color:var(--green);touc
         <div class="panel-head"><h3>Prévia ao vivo</h3><span>não altera a Beta até você aplicar</span></div>
         <div class="preview-stage">
           <div class="preview-device" id="preview"></div>
+          <button class="preview-compare" id="compareInitial" type="button" aria-pressed="false" title="Comparar com o padrão inicial">Inicial</button>
         </div>
       </article>
 
@@ -150,8 +239,22 @@ input[type=range]{width:100%;height:34px;margin:0;accent-color:var(--green);touc
 <div class="bottom-bar">
   <div class="bottom-inner">
     <div class="history-actions">
-      <button class="action soft" id="undo" disabled>↶ <span class="hide-mobile">Desfazer</span></button>
-      <button class="action soft" id="redo" disabled>↷ <span class="hide-mobile">Refazer</span></button>
+      <button class="history-icon" id="undo" disabled aria-label="Desfazer" title="Desfazer">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 20.7578 20.3672" width="24" height="24" aria-hidden="true">
+          <g>
+            <rect height="20.3672" opacity="0" width="20.7578" x="0" y="0"/>
+            <path d="M20.3516 10.1797C20.3516 15.7812 15.7812 20.3516 10.1719 20.3516C4.57031 20.3516 0 15.7812 0 10.1797C0 4.57031 4.57031 0 10.1719 0C15.7812 0 20.3516 4.57031 20.3516 10.1797ZM7.92188 4.82812L5.17188 7.60938C5.02344 7.76562 4.92188 7.96875 4.92188 8.17969C4.92188 8.39062 5.02344 8.58594 5.17188 8.74219L7.92969 11.5469C8.04688 11.6797 8.20312 11.7422 8.39062 11.7422C8.75 11.7422 9.03125 11.4609 9.03125 11.0859C9.03125 10.9062 8.96094 10.7422 8.82812 10.6094L7.375 9.20312L6.81138 8.78286L7.99219 8.8125L11.2969 8.8125C12.9062 8.8125 14.0859 9.74219 14.0859 11.3672C14.0859 13.0234 12.9297 14.0547 11.2891 14.0547L9.79688 14.0547C9.42188 14.0547 9.13281 14.2891 9.13281 14.6953C9.13281 15.1094 9.42188 15.3359 9.8125 15.3359L11.2891 15.3359C13.6719 15.3359 15.4062 13.8281 15.4062 11.4297C15.4062 9.03125 13.6797 7.55469 11.2969 7.55469L7.99219 7.55469L6.81481 7.57439L7.54688 7L8.82031 5.75C8.94531 5.64062 9.03125 5.46875 9.03125 5.28125C9.03125 4.90625 8.75 4.625 8.38281 4.625C8.19531 4.625 8.03906 4.6875 7.92188 4.82812Z" fill="currentColor" fill-opacity="0.85"/>
+          </g>
+        </svg>
+      </button>
+      <button class="history-icon" id="redo" disabled aria-label="Refazer" title="Refazer">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 20.7578 20.3672" width="24" height="24" aria-hidden="true">
+          <g>
+            <rect height="20.3672" opacity="0" width="20.7578" x="0" y="0"/>
+            <path d="M20.3516 10.1797C20.3516 15.7812 15.7812 20.3516 10.1719 20.3516C4.57031 20.3516 0 15.7812 0 10.1797C0 4.57031 4.57031 0 10.1719 0C15.7812 0 20.3516 4.57031 20.3516 10.1797ZM11.3047 5.28125C11.3047 5.46875 11.3906 5.64062 11.5156 5.75L12.7891 7L13.5211 7.57439L12.3438 7.55469L9.03906 7.55469C6.65625 7.55469 4.92188 9.03125 4.92188 11.4297C4.92188 13.8281 6.66406 15.3359 9.04688 15.3359L10.5156 15.3359C10.9062 15.3359 11.2031 15.1094 11.2031 14.6953C11.2031 14.2891 10.9062 14.0547 10.5312 14.0547L9.04688 14.0547C7.40625 14.0547 6.24219 13.0234 6.24219 11.3672C6.24219 9.74219 7.42969 8.8125 9.03906 8.8125L12.3438 8.8125L13.5246 8.78286L12.9609 9.20312L11.5078 10.6094C11.375 10.7422 11.3047 10.9062 11.3047 11.0859C11.3047 11.4609 11.5859 11.7422 11.9375 11.7422C12.1328 11.7422 12.2812 11.6797 12.4062 11.5469L15.1641 8.74219C15.3125 8.58594 15.4062 8.39062 15.4062 8.17969C15.4062 7.96875 15.3125 7.76562 15.1641 7.60938L12.4141 4.82812C12.2891 4.6875 12.1406 4.625 11.9453 4.625C11.5859 4.625 11.3047 4.90625 11.3047 5.28125Z" fill="currentColor" fill-opacity="0.85"/>
+          </g>
+        </svg>
+      </button>
     </div>
     <div class="publish-actions">
       <button class="action" id="exportBtn">Exportar</button>
@@ -217,6 +320,7 @@ let overrides={};
 let undoStack=[];
 let redoStack=[];
 let savedSignature='{}';
+let compareInitial=false;
 
 const $=s=>document.querySelector(s);
 const catalog=$('#catalog'),controls=$('#controls'),preview=$('#preview');
@@ -234,7 +338,10 @@ function readSaved(){
 }
 
 function getItem(){return allItems.find(i=>i.id===selectedId)||allItems[0]}
-function valueOf(field){return Object.prototype.hasOwnProperty.call(overrides,field.key)?overrides[field.key]:field.default}
+function valueOf(field,initial=false){
+ if(initial) return field.default;
+ return Object.prototype.hasOwnProperty.call(overrides,field.key)?overrides[field.key]:field.default;
+}
 function formatValue(v,field){
  if(field.step<1&&Number.isFinite(Number(v))) return Number(v).toFixed(String(field.step).split('.')[1]?.length||2).replace(/0+$/,'').replace(/\.$/,'');
  return String(v);
@@ -291,7 +398,7 @@ function renderCatalog(filter=''){
    items.forEach(item=>{
      const b=document.createElement('button');b.className='component-item'+(item.id===selectedId?' active':'');b.type='button';
      b.innerHTML='<span class="component-icon">'+item.icon+'</span><span class="component-copy"><strong>'+item.name+'</strong><small>'+item.description+'</small></span>';
-     b.onclick=()=>{selectedId=item.id;renderAll();};
+     b.onclick=()=>{selectedId=item.id;compareInitial=false;renderAll();};
      wrap.appendChild(b);
    });
    catalog.appendChild(wrap);
@@ -334,10 +441,19 @@ function renderControls(scroll=false){
 function applyPreviewVars(item){
  const root=$('#preview');
  root.removeAttribute('style');
- item.fields.forEach(field=>{if(field.pv)root.style.setProperty(field.pv,String(valueOf(field))+(field.unit==='px'?'px':''));});
+ item.fields.forEach(field=>{
+   if(field.pv) root.style.setProperty(field.pv,String(valueOf(field,compareInitial))+(field.unit==='px'?'px':''));
+ });
  const global=allItems.find(x=>x.id==='colors');
- if(global)global.fields.forEach(f=>{if(f.pv)root.style.setProperty(f.pv,String(valueOf(f)));});
- document.querySelector('.preview-stage').style.background=valueOf(global.fields[0]);
+ if(global) global.fields.forEach(f=>{
+   if(f.pv) root.style.setProperty(f.pv,String(valueOf(f,compareInitial)));
+ });
+ document.querySelector('.preview-stage').style.background=valueOf(global.fields[0],compareInitial);
+ const compare=$('#compareInitial');
+ compare.classList.toggle('active',compareInitial);
+ compare.setAttribute('aria-pressed',String(compareInitial));
+ compare.textContent=compareInitial?'Atual':'Inicial';
+ compare.title=compareInitial?'Voltar às alterações atuais':'Comparar com o padrão inicial';
 }
 
 function renderPreview(){
@@ -370,6 +486,10 @@ function renderAll(){
 }
 
 $('#search').addEventListener('input',e=>renderCatalog(e.target.value));
+$('#compareInitial').onclick=()=>{
+ compareInitial=!compareInitial;
+ renderPreview();
+};
 $('#resetComponent').onclick=()=>{
  const item=getItem();
  if(!item.fields.some(f=>Object.prototype.hasOwnProperty.call(overrides,f.key)))return toast('Este elemento já está no padrão');
