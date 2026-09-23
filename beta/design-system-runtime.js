@@ -14,6 +14,12 @@
   }
 
   const rules={
+    'color.bg':v=>`:root{--bg:${v}!important}`,
+    'color.card':v=>`:root{--card:${v}!important}.card{background:${v}!important}`,
+    'color.text':v=>`:root{--text:${v}!important}`,
+    'color.muted':v=>`:root{--muted:${v}!important}`,
+    'color.line':v=>`:root{--line:${v}!important}.card,.btn,.field input,.field select,.field textarea{border-color:${v}!important}`,
+    'color.green':v=>`:root{--green:${v}!important}`,
     'card.radius':v=>`.card{border-radius:${v}px!important}`,
     'card.borderWidth':v=>`.card{border-width:${v}px!important}`,
     'card.shadowY':v=>`.card{box-shadow:0 ${v}px var(--ds-card-shadow-blur,22px) rgba(15,23,42,var(--ds-card-shadow-opacity,.035))!important}`,
@@ -106,6 +112,12 @@
     Object.entries(overrides||{}).forEach(([key,value])=>{
       const fn=rules[key];
       if(!fn) return;
+      if(key.startsWith('color.')){
+        const color=String(value||'').trim();
+        if(!/^#[0-9a-f]{6}$/i.test(color)) return;
+        css.push(fn(color));
+        return;
+      }
       const num=Number(value);
       if(!Number.isFinite(num)) return;
       css.push(fn(num));
