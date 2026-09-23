@@ -35,6 +35,10 @@
         .replace('<span class="badge">PRO</span>','<span class="badge">PRO · BETA</span>');
       document.body.innerHTML=body;
 
+      const designSystem=document.createElement('script');
+      designSystem.src='./design-system-runtime.js?v=1';
+      document.body.appendChild(designSystem);
+
       const nutrition=document.createElement('script');
       nutrition.src='./nutrition-data.js?v=6';
       nutrition.onload=()=>{
