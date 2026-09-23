@@ -251,7 +251,7 @@ function pushHistory(){
  redoStack=[];
  updateHistoryButtons();
 }
-function setOverride(field,value,withHistory=true){
+function setOverride(field,value,withHistory=true,rerender=true){
  const previous=valueOf(field);
  let next=value;
  if(field.type==='number'){
@@ -265,7 +265,7 @@ function setOverride(field,value,withHistory=true){
  if(String(previous)===String(next)) return;
  if(withHistory) pushHistory();
  if(String(next)===String(field.default)) delete overrides[field.key]; else overrides[field.key]=next;
- renderControls(false);renderPreview();updateStatus();
+ if(rerender) renderControls(false);renderPreview();updateStatus();
 }
 function updateStatus(){
  const dirty=signature()!==savedSignature;
@@ -316,7 +316,7 @@ function renderControls(scroll=false){
      const input=box.querySelector('.number-input'),range=box.querySelector('.range');
      const commit=v=>setOverride(field,v);
      input.addEventListener('change',()=>commit(input.value));
-     range.addEventListener('input',()=>{input.value=range.value;setOverride(field,range.value);});
+     range.addEventListener('input',()=>{input.value=range.value;setOverride(field,range.value,true,false);const valueLabel=box.querySelector('.control-head span');valueLabel.textContent='alterado · '+formatValue(valueOf(field),field)+(field.unit?' '+field.unit:'');});
      box.querySelector('.minus').onclick=()=>commit(Number(valueOf(field))-field.step);
      box.querySelector('.plus').onclick=()=>commit(Number(valueOf(field))+field.step);
    }else{
