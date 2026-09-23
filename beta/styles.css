@@ -123,11 +123,8 @@
 .editor-tab svg{
   width:19px;
   height:19px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.9;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+  fill:currentColor;
+  stroke:none;
 }
 .editor-tab:active{
   background:#eefbf6;
